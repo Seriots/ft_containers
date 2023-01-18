@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:24:47 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 12:51:16 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/18 15:50:09 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,7 @@ void	stack_test_with_deque(void);
 void	reverse_iterator_test(void);
 void	test_enable_if(void);
 void	test_is_integral(void);
+void	test_equal(void);
+void	test_lexicographical_compare(void);
+
 

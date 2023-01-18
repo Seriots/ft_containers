@@ -6,7 +6,7 @@
 #    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/16 11:07:35 by lgiband           #+#    #+#              #
-#    Updated: 2023/01/18 13:06:26 by lgiband          ###   ########.fr        #
+#    Updated: 2023/01/18 16:15:42 by lgiband          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ SHELL = /bin/bash
 
 # List of all the sources (.cpp)
 # -------------------------------------------------------------------------
-SRCS =		main.cpp test_stack.cpp test_reverse_iterator.cpp test_is_integral.cpp
+SRCS =		main.cpp test_stack.cpp test_reverse_iterator.cpp test_is_integral.cpp test_equal.cpp test_lexicographical_compare.cpp
 
 #test_enable_if.cpp
 
@@ -38,6 +38,7 @@ endif
 
 # Description of the final target
 # -------------------------------------------------------------------------
+TAG	 =			std
 NAME =			ft_containers
 
 # Libraries
@@ -85,15 +86,14 @@ $(OBJS_DIR)/$(TAG)/%.o: $(SRCS_DIR)/%.cpp $(OBJS_DIR)/$(TAG)/%.d
 all:		$(NAME)
 
 clean:		dclean
-			$(RM) $(OBJS)
-			$(RM) $(OBJS_DIR)/*/*.o
+			rm -Rf $(OBJS_DIR)
 			@if [ -d $(OBJS_DIR) ]; then \
 				find $(OBJS_DIR) -type d | xargs rmdir -p --ignore-fail-on-non-empty; \
 			fi
 
-fclean:		clean dclean
-			$(RM) $(NAME)
+fclean:		clean
 			$(RM) std_containers
+			$(RM) ft_containers
 			rm -Rf test/
 
 re:			fclean all
@@ -114,7 +114,8 @@ $(OBJS_DIR)/$(TAG)/%.d: $(SRCS_DIR)/%.cpp Makefile
 	$(CXX) -MM -MT $(@:.d=.o) $(CXXFLAGS) $(INCLUDES) $< >> $@
 
 dclean:
-			$(RM) $(DEPS)
+			$(RM) std/$(DEPS)
+			$(RM) ft/$(DEPS)
 
 .PHONY:		dclean
 .SILENT:    $(DEPS) dclean

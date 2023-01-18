@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 12:27:25 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 12:58:26 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/18 15:24:34 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ namespace ft
 	template< class T, T v >
 	struct integral_constant
 	{
-		typedef T		type;
-		typedef T		value_type;
+		typedef T		type; //not use
+		typedef T		value_type; //not use
 		static const T	value = v;
 
-		operator value_type() const { return value; }
+		operator value_type() const { return value; } //not use
 	};
 
 	typedef integral_constant<bool, true>	true_type;

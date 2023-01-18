@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 12:51:52 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/18 15:50:20 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ int	main(void)
 	time_test(&stack_test_with_deque);
 	time_test(&reverse_iterator_test);
 	time_test(&test_is_integral);
+	time_test(&test_equal);
+	time_test(&test_lexicographical_compare);
 	//time_test(&test_enable_if);
 
 }
