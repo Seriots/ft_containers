@@ -6,7 +6,7 @@
 #    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/16 11:07:35 by lgiband           #+#    #+#              #
-#    Updated: 2023/01/17 23:50:33 by lgiband          ###   ########.fr        #
+#    Updated: 2023/01/18 13:06:26 by lgiband          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ SHELL = /bin/bash
 
 # List of all the sources (.cpp)
 # -------------------------------------------------------------------------
-SRCS =		main.cpp test_stack.cpp test_reverse_iterator.cpp
+SRCS =		main.cpp test_stack.cpp test_reverse_iterator.cpp test_is_integral.cpp
 
 #test_enable_if.cpp
 
@@ -30,8 +30,10 @@ CXX = 		c++
 CXXFLAGS =	-Wall -Wextra -Werror --std=c++98 -g
 ifeq ($(n), std)
 	CPPFLAGS	+= -D NAMESPACE=0
+	TAG			=		std
 else
 	CPPFLAGS	+= -D NAMESPACE=1
+	TAG			=		ft
 endif
 
 # Description of the final target
@@ -43,8 +45,8 @@ NAME =			ft_containers
 
 # General rules on makefile
 # -------------------------------------------------------------------------
-OBJS = 		$(addprefix $(OBJS_DIR)/,$(SRCS:.cpp=.o))
-DEPS =		$(OBJS:.o=.d) $(TEST_OBJS:.o=.d)
+OBJS = 		$(addprefix $(OBJS_DIR)/$(TAG)/,$(SRCS:.cpp=.o))
+DEPS =		$(OBJS:.o=.d)
 
 INCLUDES =	$(addprefix -I,$(HEAD_DIR))
 
@@ -73,7 +75,7 @@ all:			$(NAME)
 $(NAME):		$(OBJS)
 				$(CXX) $(LDFLAGS) -o $@ $(OBJS)
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp $(OBJS_DIR)/%.d
+$(OBJS_DIR)/$(TAG)/%.o: $(SRCS_DIR)/%.cpp $(OBJS_DIR)/$(TAG)/%.d
 	@if [ ! -d $(dir $@) ]; then \
 		mkdir -p $(dir $@); \
 		echo -e "\n$(_BLUE)$(dir $@): Create$(_NO_COLOR)"; \
@@ -84,6 +86,7 @@ all:		$(NAME)
 
 clean:		dclean
 			$(RM) $(OBJS)
+			$(RM) $(OBJS_DIR)/*/*.o
 			@if [ -d $(OBJS_DIR) ]; then \
 				find $(OBJS_DIR) -type d | xargs rmdir -p --ignore-fail-on-non-empty; \
 			fi
@@ -103,7 +106,7 @@ re:			fclean all
 
 # General dependences management
 # ------------------------------------------------------------------------
-$(OBJS_DIR)/%.d: $(SRCS_DIR)/%.cpp Makefile
+$(OBJS_DIR)/$(TAG)/%.d: $(SRCS_DIR)/%.cpp Makefile
 	@if [ ! -d $(dir $@) ]; then \
 		mkdir -p $(dir $@); \
 		echo -e "\n$(_BLUE)$(dir $@): Create$(_NO_COLOR)"; \
