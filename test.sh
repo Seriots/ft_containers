@@ -6,7 +6,7 @@ fi
 if [ ! -d "test" ]; then
 	mkdir test
 fi
-./ft_containers > test/ft_test | ./std_containers > test/std_test
+./ft_containers | ./std_containers
 #./ft_containers > /dev/pts/6 && ./std_containers > /dev/pts/4
 
 

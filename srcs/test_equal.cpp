@@ -6,20 +6,21 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 15:32:09 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 15:46:04 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/18 16:59:56 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include "equal.hpp"
 
 extern std::string name;
 
-void	test_equal(void)
+void	test_equal(std::ofstream &out)
 {
-	std::cout << name << "equal" << std::endl;
+	out << name << "equal" << std::endl;
 	
 	int a[] = {1, 2, 3, 4, 5};
 	int b[] = {1, 2, 3, 4, 5};
@@ -28,8 +29,8 @@ void	test_equal(void)
 	std::string c = "aloalo";
 	std::string d = "kayak";
 
-	std::cout << "{1, 2, 3, 4, 5} == {1, 2, 3, 4, 5} : " << ft::equal(a, a + 5, b) << std::endl;
-	std::cout << "{1, 2, 3, 4, 5} == {1, 2, 3, 4, 6} : " << ft::equal(a, a + 5, b2) << std::endl;
-	std::cout << "aloalo == kayak : " << ft::equal(c.begin(), c.end(), d.begin()) << std::endl;
-	std::cout << "kayak == (reverse)kayak : " << ft::equal(d.begin(), d.end(), d.rbegin(), std::equal_to<char>()) << std::endl;
+	out << "{1, 2, 3, 4, 5} == {1, 2, 3, 4, 5} : " << ft::equal(a, a + 5, b) << std::endl;
+	out << "{1, 2, 3, 4, 5} == {1, 2, 3, 4, 6} : " << ft::equal(a, a + 5, b2) << std::endl;
+	out << "aloalo == kayak : " << ft::equal(c.begin(), c.end(), d.begin()) << std::endl;
+	out << "kayak == (reverse)kayak : " << ft::equal(d.begin(), d.end(), d.rbegin(), std::equal_to<char>()) << std::endl;
 }
