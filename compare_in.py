@@ -7,13 +7,13 @@ with open(sys.argv[1], 'r') as f1, open(sys.argv[2], 'r') as f2:
 
 for i in range(len(ft_file)):
 	if ft_file[i][0:-1].find('ft_') != -1:
-		print(f'{ft_file[i][0:-1]: <30} | {std_file[i][0:-1]: <30}', end='\n')
+		print(f'{ft_file[i][0:-1]: <50} | {std_file[i][0:-1]: <50}', end='\n')
 	elif re.search(r'<.*>', ft_file[i][0:-1]):
-		print(f'{ft_file[i][0:-1]: <30} | {std_file[i][0:-1]: <30}', end='\n')
+		print(f'{ft_file[i][0:-1]: <50} | {std_file[i][0:-1]: <50}', end='\n')
 	elif ft_file[i][0:-1].find('Time: ') != -1:
-		print(f'{ft_file[i][0:-1]: <30} | {std_file[i][0:-1]: <30}', end='\n\n')
+		print(f'{ft_file[i][0:-1]: <50} | {std_file[i][0:-1]: <50}', end='\n\n')
 	else:
-		print(f'{ft_file[i][0:-1]: <30} | {std_file[i][0:-1]: <30} --> ', end='')
+		print(f'{ft_file[i][0:-1]: <50} | {std_file[i][0:-1]: <50} --> ', end='')
 		if ft_file[i] == std_file[i]:
 			print('OK')
 		else:

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/16 16:59:57 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/17 23:50:07 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,7 @@ int	main(void)
 {
 	time_test(&stack_test_with_vector);
 	time_test(&stack_test_with_deque);
+	time_test(&reverse_iterator_test);
+	//time_test(&test_enable_if);
+
 }

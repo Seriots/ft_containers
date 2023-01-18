@@ -6,7 +6,7 @@
 #    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/16 11:07:35 by lgiband           #+#    #+#              #
-#    Updated: 2023/01/16 17:19:23 by lgiband          ###   ########.fr        #
+#    Updated: 2023/01/17 23:50:33 by lgiband          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,9 @@ SHELL = /bin/bash
 
 # List of all the sources (.cpp)
 # -------------------------------------------------------------------------
-SRCS =		main.cpp test_stack.cpp
+SRCS =		main.cpp test_stack.cpp test_reverse_iterator.cpp
+
+#test_enable_if.cpp
 
 # List of the related directories
 # -------------------------------------------------------------------------
@@ -26,7 +28,6 @@ HEAD_DIR =	includes
 # -------------------------------------------------------------------------
 CXX = 		c++
 CXXFLAGS =	-Wall -Wextra -Werror --std=c++98 -g
-
 ifeq ($(n), std)
 	CPPFLAGS	+= -D NAMESPACE=0
 else
