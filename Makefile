@@ -6,7 +6,7 @@
 #    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/16 11:07:35 by lgiband           #+#    #+#              #
-#    Updated: 2023/01/19 14:53:40 by lgiband          ###   ########.fr        #
+#    Updated: 2023/01/23 15:58:29 by lgiband          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,12 +17,11 @@ SHELL = /bin/bash
 SRCS =		main.cpp \
 			test_stack.cpp \
 			test_reverse_iterator.cpp \
-			test_is_integral.cpp \
 			test_equal.cpp \
 			test_lexicographical_compare.cpp \
 			test_vector.cpp \
 
-#test_enable_if.cpp
+# test_is_integral.cpp test_enable_if.cpp
 
 # List of the related directories
 # -------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 12:53:53 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/19 14:46:36 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 11:35:09 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,6 @@ void	access_operator_test(std::ofstream &out)
 	out << "*x == " << *x << std::endl;
 	out << "x[0] == " << x[0] << std::endl;
 	out << "x[2] == " << x[2] << std::endl;
-	out << "(&x)->base() == " << *((&(x))->base()) << std::endl;
 	out << "<Edit: x++>" << std::endl;
 	x++;
 	out << "(&x)->base() == " << *((&(x))->base()) << std::endl;

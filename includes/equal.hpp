@@ -6,11 +6,12 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 15:23:47 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 15:31:04 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 11:54:15 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include <cstddef>
 
 namespace ft
 {

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:24:47 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/19 13:21:52 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 14:31:49 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ template < typename T > std::string to_string( const T& n )
 	return stm.str() ;
 }
 
+std::string	progressBar(long unsigned int value, long unsigned int max_value, long unsigned int size_max, char c);
 void	time_test(void f(std::ofstream &), std::ofstream& out);
 
 void	stack_test_with_vector(std::ofstream &out);

@@ -6,6 +6,7 @@
 
 #include "vector.hpp"
 #include "utils.hpp"
+#include "lexicographical_compare.hpp"
 
 void	display_vector(ft::vector<int> v)
 {
@@ -22,6 +23,12 @@ void	display_vector(std::vector<int> v)
 		std::cout << v[i] << " ";
 	std::cout << std::endl;
 }
+template <class Value>
+bool	comparator_equal(Value& first, Value& second)
+{
+	return (first == second);
+}
+
 
 void	test_vector_constructor()
 {
@@ -35,15 +42,17 @@ void	test_vector_constructor()
 	a.push_back(4);
 	a.push_back(5);
 
-	ft::vector<int> v1;
-	ft::vector<int> v2(v1);
-	ft::vector<int> v3((size_t)5, 42);
-	ft::vector<int> v4(a.begin(), a.end());
-	std::vector<int> v5(a.begin(), a.end());
+		std::vector<int> a2;
 
+	a2.push_back(1);
+	a2.push_back(2);
+	a2.push_back(3);
+	a2.push_back(4);
+	a2.push_back(5);
+
+	std::cout << "a == a2: " << ft::lexicographical_compare(a.begin(), a.end(), a2.begin(), a2.end(), comparator_equal<int>) << std::endl;
 	//ft::vector<int> v5(std::allocator<int>);
-	display_vector(v4);
-	display_vector(v5);
+
 }
 
 int	main(void)

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 15:39:26 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 15:45:29 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 14:14:44 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,10 @@ namespace ft
 			if (*first2 < *first1)
 				return false;
 		}
-	
 		return (first1 == last1) && (first2 != last2);
 	};
 	
-	template< class InputIt1, class InputIt2, class Compare >
+	template< class InputIt1, class InputIt2, typename Compare >
 	bool lexicographical_compare( InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, Compare comp )
 	{
 		for (; (first1 != last1) && (first2 != last2); ++first1, ++first2)

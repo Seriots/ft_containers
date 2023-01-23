@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/19 14:54:30 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 14:39:23 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	main(void)
 										&reverse_iterator_test,
 										&test_equal, &test_lexicographical_compare, &test_vector};
 
-	// &test_is_integral need to use c++11
+	// &test_is_integral &test_enable_if need to use c++11
 
 	out.open(path.c_str());
 
@@ -81,7 +81,6 @@ int	main(void)
 			<< std::flush;
 		time_test(fonc[i], out);
 	}
-	//time_test(&test_enable_if, out);
 	std::cout  << "\33[2K\r" << "\033[0;32m"
 			<< "[" << progressBar(sizeof(fonc) / sizeof(fonc[0]), sizeof(fonc) / sizeof(fonc[0]), 100, '=') << "]  "
 			<< sizeof(fonc) / sizeof(fonc[0]) << "/" << sizeof(fonc) / sizeof(fonc[0]) << "\033[0m"
