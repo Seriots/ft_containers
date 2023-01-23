@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/23 16:05:41 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 19:08:43 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,17 @@ namespace ft
 			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator()) : _size(last - first), _capacity(last - first), _data(NULL), _allocator(alloc)
 			{
 				_data = _allocator.allocate(_capacity);
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, *(first++));
+				std::memcpy(_data, &(*first), _size * sizeof(T));
+				//for (size_type i = 0; i < _size; i++)
+				//	_allocator.construct(_data + i, *(first++));
 			};
 
 			vector( const vector& other ) : _size(other._size), _capacity(other._capacity), _data(NULL), _allocator(other._allocator)
 			{
 				_data = _allocator.allocate(_capacity);
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, other._data[i]);
+				std::memcpy(_data, other._data, _size * sizeof(T));
+				//for (size_type i = 0; i < _size; i++)
+				//	_allocator.construct(_data + i, other._data[i]);
 			};
 
 			~vector() {_allocator.deallocate(_data, _capacity);};
@@ -91,8 +93,9 @@ namespace ft
 				_size = rhs._size;
 				_capacity = rhs._capacity;
 				_data = _allocator.allocate(_capacity);
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, rhs._data[i]);
+				std::memcpy(_data, rhs._data, _size * sizeof(T));
+				//for (size_type i = 0; i < _size; i++)
+				//	_allocator.construct(_data + i, rhs._data[i]);
 				return (*this);
 			};
 
@@ -142,8 +145,9 @@ namespace ft
 					return ;
 				_capacity = new_cap;
 				pointer tmp = _allocator.allocate(_capacity);
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(tmp + i, _data[i]);
+				std::memcpy(tmp, _data, _size * sizeof(T));
+				// for (size_type i = 0; i < _size; i++)
+				// 	_allocator.construct(tmp + i, _data[i]);
 			};
 			size_type capacity() const {return (_capacity);};
 
@@ -163,8 +167,9 @@ namespace ft
 					_capacity = last - first;
 					_data = _allocator.allocate(_capacity);
 				}
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, *(first++));
+				std::memcpy(_data, &(*first), _size * sizeof(T));
+				// for (size_type i = 0; i < _size; i++)
+				// 	_allocator.construct(_data + i, *(first++));
 			};
 
 			void assign (size_type n, const value_type& val)
@@ -279,7 +284,12 @@ namespace ft
 				size_type n = last - first;				
 				if (_size + n > _capacity)
 				{
-					_capacity = _size + n;
+					if (_capacity == 0)
+						_capacity = n;
+					else if (_capacity < n)
+						_capacity = _size + n;
+					else
+						_capacity = _size + (n * ((size_type)((_capacity) / n) + 1));
 					pointer tmp = _allocator.allocate(_capacity);
 
 					std::memcpy(tmp, _data, sizeof(value_type) * pos);
@@ -299,11 +309,63 @@ namespace ft
 				_size += n;
 			};
 			
+			iterator erase (iterator position)
+			{
+				size_type	pos;
+
+				pos = position - _data;
+				_allocator.destroy(_data + pos);
+				std::memcpy(_data + pos, _data + pos + 1, sizeof(value_type) * (_size - pos - 1));
+				_size--;
+				return (position);
+			};
+
+			iterator erase( iterator first, iterator last )
+			{
+				size_type	pos;
+				size_type	n;
+
+				pos = first - _data;
+				n = last - first;
+				for (size_type i = 0; i < n; i++)
+					_allocator.destroy(_data + pos + i);
+				std::memcpy(_data + pos, _data + pos + n, sizeof(value_type) * (_size - pos - n));
+				_size -= n;
+				return (first);
+			};
 			
+			void clear()
+			{
+				for (size_type i = 0; i < _size; i++)
+					_allocator.destroy(_data + i);
+				_size = 0;
+			};
+
+			void swap( vector& other )
+			{
+				vector	tmp(other);
+				other = *this;
+				*this = tmp;
+			}
+
 			void resize (size_type n, value_type val = value_type())
 			{
-				(void)n;
-				(void)val;
+				if (n > _capacity)
+				{
+					_capacity = n;
+					pointer tmp = _allocator.allocate(_capacity);
+					std::memcpy(tmp, _data, sizeof(value_type) * _size);
+					for (size_type i = _size; i < n; i++)
+						_allocator.construct(tmp + i, val);
+					_allocator.deallocate(_data, _capacity);
+					_data = tmp;
+				}
+				else
+				{
+					for (size_type i = _size; i < n; i--)
+						_allocator.destroy(_data + i);
+				}
+				_size = n;
 			}
 
 	};

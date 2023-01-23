@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/23 16:06:04 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/23 19:20:06 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,14 @@ void	display_vector(ft::vector<int> &v, std::ofstream& out)
 	out << std::endl;
 }
 
+void	display_vector_content(ft::vector<int> &v, std::ofstream& out, std::string prompt)
+{
+	out << prompt << " ";
+	for (size_t i = 0; i < v.size(); i++)
+		out << v[i] << " ";
+	out << std::endl;
+}
+
 void	test_vector_constructor(std::ofstream& out)
 {
 	out << "<Vector Constructor>" << std::endl;
@@ -59,6 +67,8 @@ void	test_vector_constructor(std::ofstream& out)
 
 	//v1 = v1;
 	v1[0] = 1;
+	v3[0] = 1;
+	v3[1] = 21;
 	display_vector(v1, out);
 	display_vector(v2, out);
 	display_vector(v3, out);
@@ -357,20 +367,36 @@ void	test_vector_insert_fill(std::ofstream& out)
 
 void	test_vector_insert_range(std::ofstream& out)
 {
-	out << "<Vector Insert Fill>" << std::endl;
+	out << "<Vector Insert Range>" << std::endl;
 
 	ft::vector<int> v;
 	ft::vector<int> v2;
+	ft::vector<int> v3;
 
 	for (int i = 0; i < 7; i++)
 		v2.push_back(i);
 
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < 10; i++)
 		v.push_back(i);
 
+	out << "<Set v: >" << std::endl;
+	display_vector(v, out);
+	out << "<Set: v2.insert(v2.begin() + 3, v.begin(), v.end())>" << std::endl;
 	v2.insert(v2.begin() + 3, v.begin(), v.end());
 	display_vector(v2, out);
-	
+	v2.push_back(42);
+	display_vector(v2, out);
+
+	out << "<Set same x20000>" << std::endl;
+	for (int i = 0; i < 2000; i++)
+		v2.insert(v2.begin(), v.begin(), v.end());
+	display_vector_content(v2, out, "v2: ");
+
+	out << "<Set v3 empty and run v x20000>" << std::endl;
+	for (int i = 0; i < 2000; i++)
+		v3.insert(v3.begin(), v.begin(), v.end());
+	v3.push_back(42);
+	display_vector_content(v3, out, "v3: ");
 }
 
 void	test_vector_insert_toomany(std::ofstream& out)
@@ -384,6 +410,88 @@ void	test_vector_insert_toomany(std::ofstream& out)
 	display_vector(v, out);
 }
 
+void	test_vector_erase(std::ofstream &out)
+{
+	out << "<Vector Erase>" << std::endl;
+	
+	ft::vector<int> v;
+	ft::vector<int> v2;
+	
+	for (int i = 0; i < 10; i++)
+		v.push_back(i);
+
+	for (int i = 0; i < 10000; i++)
+		v2.push_back(i);
+		
+	out << "ret: " << *(v.erase(v.begin() + 3)) << std::endl;
+	out << "ret: " << *(v2.erase(v2.begin() + 3, v2.begin() + 7)) << std::endl;
+
+	display_vector(v, out);
+	display_vector(v2, out);
+
+	for (int i = 0; i < 4000; i++)
+		v2.erase(v2.begin() + 2);
+	display_vector(v2, out);
+}
+
+void	test_vector_clear(std::ofstream &out)
+{
+	out << "<Vector Clear>" << std::endl;
+	
+	ft::vector<int> v;
+
+	for (int i = 0; i < 10; i++)
+		v.push_back(i);
+
+	display_vector(v, out);
+	v.clear();
+	display_vector(v, out);
+}
+
+void	test_vector_swap(std::ofstream &out)
+{
+	out << "<Vector Swap>" << std::endl;
+
+	ft::vector<int> v;
+	ft::vector<int> v2;
+
+	for (int i = 0; i < 10; i++)
+		v.push_back(i);
+
+	for (int i = 0; i < 10000; i++)
+		v2.push_back(i);
+
+	display_vector(v, out);
+	display_vector(v2, out);
+	v.swap(v2);
+	display_vector(v, out);
+	display_vector(v2, out);
+	v.swap(v);
+	display_vector(v, out);
+}
+
+void	test_vector_resize(std::ofstream &out)
+{
+	out << "<Vector Resize>" << std::endl;
+
+	ft::vector<int> v;
+	
+	for (int i = 0; i < 10; i++)
+		v.push_back(i);
+	
+	display_vector(v, out);
+	v.resize(5);
+	display_vector(v, out);
+	for (int i = 0; i < 10; i++)
+		v.push_back(i);
+	v.resize(20, 42);
+	display_vector_content(v, out, "v.resize(20, 42): ");
+	v.resize(118, 21);
+	display_vector_content(v, out, "v.resize(118, 21): ");
+	v.resize(1000000, 5);
+	display_vector_content(v, out, "v.resize(100000, 5): ");
+}
+
 void	test_vector(std::ofstream &out)
 {
 	out << name << "vector" << std::endl;
@@ -392,7 +500,8 @@ void	test_vector(std::ofstream &out)
 										&test_vector_comparison, &test_vector_assign,
 										&test_vector_pushback_ten, &test_vector_pushback_hundred, &test_vector_pushback_thousands,
 										&test_vector_pushback_too_many, &test_vector_pop, &test_vector_insert,
-										&test_vector_insert_toomany, &test_vector_insert_fill, &test_vector_insert_range};
+										&test_vector_insert_toomany, &test_vector_insert_fill, &test_vector_insert_range,
+										&test_vector_erase, &test_vector_swap, &test_vector_clear, &test_vector_resize};
 	//std::cout  << "\n";
 	for (long unsigned int i = 0; i < sizeof(fonc) / sizeof(fonc[0]); i++)
 	{
