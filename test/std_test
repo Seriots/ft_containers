@@ -1,0 +1,238 @@
+std_stack_vector
+Stack empty: 1
+
+<Set Stack>
+Stack no-empty: 0
+Stack top: 4
+Stack size: 4
+
+<Pop one element>
+Stack top: 3
+Stack size: 3
+
+<Operator Test>
+Operator =: 3 3
+Operator ==: 1
+Operator !=: 1
+Operator >: 1
+Operator =>: 1
+Operator <: 1
+Operator <=: 1
+
+<Add one elem>
+Operator =: 5 4
+Operator ==: 0
+Operator !=: 0
+Operator >: 0
+Operator =>: 0
+Operator <: 0
+Operator <=: 0
+Time: 0.001242
+std_stack_deque
+Stack empty: 1
+
+<Set Stack>
+Stack no-empty: 0
+Stack top: 4
+Stack size: 4
+
+<Pop one element>
+Stack top: 3
+Stack size: 3
+
+<Operator Test>
+Operator =: 3 3
+Operator ==: 1
+Operator !=: 1
+Operator >: 1
+Operator =>: 1
+Operator <: 1
+Operator <=: 1
+
+<Add one elem>
+Operator =: 5 4
+Operator ==: 0
+Operator !=: 0
+Operator >: 0
+Operator =>: 0
+Operator <: 0
+Operator <=: 0
+Time: 0.000943
+std_reverse_iterator_test
+<Constructor reverse_iterator test>
+<Set: std::vector, 1->2->3->4->5>
+<Set: x:end, y:begin>
+*x == 5
+*y == 5
+*z == 5
+x == y : true
+x == z : true
+y == z : true
+<Edit: x++>
+*x == 4
+*y == 5
+*z == 5
+x == y : false
+x == z : false
+y == z : true
+<Set: array, 0->1->2->3>
+<Comparison operators>
+*x == 3
+*y == 3
+*z == 2
+x == y ? true
+x != y ? false
+x <  y ? false
+x <= y ? true
+x == z ? false
+x != z ? true
+x <  z ? true
+x <= z ? true
+<Edit: z--, y++>
+*x == 3
+*y == 2
+*z == 3
+x == y ? false
+x != y ? true
+x <  y ? true
+x <= y ? true
+x == z ? true
+x != z ? false
+x <  z ? false
+x <= z ? true
+<Modification operators>
+<Set: std::vector, 1->2->3->4->5>
+<Set: x:end, y:begin>
+*x == 9
+*y == 7
+<Edit: x++, y++>
+*x == 8
+*y == 6
+<Edit: x++, y++>
+*x == 7
+*y == 5
+<Edit: x++, y++>
+*x == 6
+*y == 4
+<Edit: x++, y++>
+*x == 5
+*y == 3
+<Edit: x++, y++>
+*x == 4
+*y == 2
+<Edit: x++, y++>
+*x == 3
+*y == 1
+<Edit: x--, y-->
+*x == 4
+*y == 2
+<Edit: x--, y-->
+*x == 5
+*y == 3
+<Edit: x--, y-->
+*x == 6
+*y == 4
+<Edit: x--, y-->
+*x == 7
+*y == 5
+<Edit: x--, y-->
+*x == 8
+*y == 6
+<Edit: x--, y-->
+*x == 9
+*y == 7
+<Edit: x + 4, y + 4>
+*x == 5
+*y == 3
+<Edit: x - 1, y - 1>
+*x == 6
+*y == 7
+<Edit: x += 4, y += 4>
+*x == 2
+*y == 3
+<Edit: x -= 1, y -= 1>
+*x == 3
+*y == 4
+<Edit: --x, --y>
+*--x == 4, *x ==4
+*--y == 5, *y ==5
+<Edit: ++x, ++y>
+*++x == 3, *x ==3
+*++y == 4, *y ==4
+<Edit: x--, y-->
+*x-- == 3, *x ==4
+*y-- == 4, *y ==5
+<Edit: x++, y++>
+*x++ == 4, *x ==3
+*y++ == 5, *y ==4
+<Modification operators>
+<Set: std::vector, 1->2->3->4->5>
+*x == 5
+x[0] == 5
+x[2] == 3
+(&x)->base() == 6
+<Edit: x++>
+(&x)->base() == 5
+Time: 0.003473
+std_is_integral_test
+<Need to be True>
+bool -> true
+char -> true
+signed char -> true
+unsigned char -> true
+wchar_t -> true
+short -> true
+unsigned short -> true
+int -> true
+long int -> true
+long long int -> true
+unsigned int -> true
+unsigned char -> true
+unsigned short int -> true
+long -> true
+unsigned long -> true
+unsigned long int -> true
+long long -> true
+unsigned long long -> true
+unsigned long long int -> true
+<Need to be False>
+float -> false
+double -> false
+long double -> false
+std::string -> false
+std::vector<int> -> false
+std::vector<std::string> -> false
+std::vector<std::vector<int> > -> false
+Time: 0.001012
+std_equal
+{1, 2, 3, 4, 5} == {1, 2, 3, 4, 5} : true
+{1, 2, 3, 4, 5} == {1, 2, 3, 4, 6} : false
+aloalo == kayak : false
+kayak == (reverse)kayak : true
+Time: 0.000207
+std_lexicographical_compare
+{1, 2, 3, 4, 5} == {1, 2, 3, 4, 5} : false
+{1, 2, 3, 4, 5} == {1, 2, 3, 4, 6} : true
+aloalo == kayak : true
+kayak == (reverse)kayak : true
+Time: 0.000230
+std_vector
+<Vector Constructor>
+0 0 2305843009213693951 true 
+0 0 2305843009213693951 true 
+5 5 2305843009213693951 false 42 42 42 42 42 
+3 3 2305843009213693951 false 3 4 5 
+0 0 2305843009213693951 true 
+Time: 0.000345
+<Vector Element Access>
+<Set: v={1, 2, 3, 4, 5}, v2={6, 7, 8, 9, 10}>
+v.front() = 1
+v2.front() = 6
+v.back() = 5
+v2.back() = 10
+v[2] = 3
+v2[2] = 8
+v.at(2) = 3
+v2.at(2) = 8
+Time: 0.000368
+Time: 0.001104

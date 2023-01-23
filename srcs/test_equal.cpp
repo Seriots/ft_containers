@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 15:32:09 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 16:59:56 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 13:27:17 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 #include <string>
 #include <fstream>
 
-#include "equal.hpp"
+#if NAMESPACE == 0
+	namespace ft = std;
+#else
+	#include "equal.hpp"
+#endif
 
 extern std::string name;
 

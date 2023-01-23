@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 17:43:19 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 14:54:30 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@
 #include <unistd.h>
 
 #if NAMESPACE == 0
-	#include <stack>
 	namespace ft = std;
+	#include <stack>
 	std::string	name = "std_";
 #else
-	#include "stack.hpp"
 	std::string	name = "ft_";
+	#include "stack.hpp"
 #endif
 
 #include "utils.hpp"
@@ -59,8 +59,10 @@ int	main(void)
 	std::string		path = "test/" + name + "test"; 
 	
 	void	(*fonc[])(std::ofstream&) = {&stack_test_with_vector, &stack_test_with_deque,
-										&reverse_iterator_test, &test_is_integral,
-										&test_equal, &test_lexicographical_compare};
+										&reverse_iterator_test,
+										&test_equal, &test_lexicographical_compare, &test_vector};
+
+	// &test_is_integral need to use c++11
 
 	out.open(path.c_str());
 
@@ -80,6 +82,10 @@ int	main(void)
 		time_test(fonc[i], out);
 	}
 	//time_test(&test_enable_if, out);
+	std::cout  << "\33[2K\r" << "\033[0;32m"
+			<< "[" << progressBar(sizeof(fonc) / sizeof(fonc[0]), sizeof(fonc) / sizeof(fonc[0]), 100, '=') << "]  "
+			<< sizeof(fonc) / sizeof(fonc[0]) << "/" << sizeof(fonc) / sizeof(fonc[0]) << "\033[0m"
+			<< std::endl;
 	out.close();
 
 }

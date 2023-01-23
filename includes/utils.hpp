@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:24:47 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 16:57:56 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 13:21:52 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ template < typename T > std::string to_string( const T& n )
 	return stm.str() ;
 }
 
+void	time_test(void f(std::ofstream &), std::ofstream& out);
 
 void	stack_test_with_vector(std::ofstream &out);
 void	stack_test_with_deque(std::ofstream &out);
@@ -33,5 +34,6 @@ void	test_enable_if(std::ofstream &out);
 void	test_is_integral(std::ofstream &out);
 void	test_equal(std::ofstream &out);
 void	test_lexicographical_compare(std::ofstream &out);
+void	test_vector(std::ofstream &out);
 
 

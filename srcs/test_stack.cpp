@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:23:31 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 17:01:15 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 13:26:12 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,13 @@
 #include <stack>
 #include <vector>
 
+#if NAMESPACE == 0
+	namespace ft = std;
+#else
+	#include "stack.hpp"
+#endif
+
 #include "utils.hpp"
-#include "stack.hpp"
 
 extern std::string name;
 

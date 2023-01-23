@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 12:53:53 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 17:01:01 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 14:46:36 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 #include <vector>
 #include <fstream>
 
-#include "reverse_iterator.hpp"
+#if NAMESPACE == 0
+	namespace ft = std;
+#else
+	#include "reverse_iterator.hpp"
+#endif
 
 extern std::string name;
 
@@ -74,11 +78,16 @@ void	modification_operator_test(std::ofstream &out)
 	v.push_back(3);
 	v.push_back(4);
 	v.push_back(5);
+	v.push_back(6);
+	v.push_back(7);
+	v.push_back(8);
+	v.push_back(9);
+	v.push_back(10);
 
 	out << "<Set: x:end, y:begin>" << std::endl;
 
-	ft::reverse_iterator<std::vector<int>::iterator> x(v.end());
-	ft::reverse_iterator<std::vector<int>::iterator> y(v.begin());
+	ft::reverse_iterator<std::vector<int>::iterator> x(v.begin() + 9);
+	ft::reverse_iterator<std::vector<int>::iterator> y(v.begin() + 7);
 	
 	out << "*x == " << *x << std::endl;
 	out << "*y == " << *y << std::endl;
@@ -90,7 +99,7 @@ void	modification_operator_test(std::ofstream &out)
 		out << "*x == " << *x << std::endl;
 		out << "*y == " << *y << std::endl;
 	}
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		out << "<Edit: x--, y-->" << std::endl;
 		x--;
@@ -147,9 +156,8 @@ void	access_operator_test(std::ofstream &out)
 	ft::reverse_iterator<std::vector<int>::iterator> x(v.end());
 	
 	out << "*x == " << *x << std::endl;
-	out << "x[0] == " << *x[0] << std::endl;
-	out << "x[1] == " << *x[1] << std::endl;
-	out << "x[4] == " << *x[4] << std::endl;
+	out << "x[0] == " << x[0] << std::endl;
+	out << "x[2] == " << x[2] << std::endl;
 	out << "(&x)->base() == " << *((&(x))->base()) << std::endl;
 	out << "<Edit: x++>" << std::endl;
 	x++;

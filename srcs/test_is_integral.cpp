@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 12:45:58 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 17:00:19 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 14:48:26 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,21 @@
 #include <vector>
 #include <fstream>
 
-extern std::string name;
+#if NAMESPACE == 0
+	namespace ft = std;
+#else
+	#include "is_integral.hpp"
+#endif
 
-#include "is_integral.hpp"
+extern std::string name;
 
 void	test_is_integral(std::ofstream &out)
 {
+	(void)out;
 	out << name << "is_integral_test" << std::endl;
 
 	out << "<Need to be True>" << std::endl;
+
 	out << "bool -> "<< std::boolalpha << ft::is_integral<bool>::value << std::endl;
 	out << "char -> "<< std::boolalpha << ft::is_integral<char>::value << std::endl;
 	out << "signed char -> "<< std::boolalpha << ft::is_integral<signed char>::value << std::endl;

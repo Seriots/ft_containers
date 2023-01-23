@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 23:25:30 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 16:59:42 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 13:27:26 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,11 @@
 #include <limits>
 #include <fstream>
 
-#include "enable_if.hpp"
+#if NAMESPACE == 0
+	namespace ft = std;
+#else
+	#include "enable_if.hpp"
+#endif
 
 extern std::string	name;
 

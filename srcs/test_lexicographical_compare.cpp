@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 15:45:55 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 17:00:34 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/19 13:26:50 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 #include <string>
 #include <fstream>
 
-#include "lexicographical_compare.hpp"
+#if NAMESPACE == 0
+	namespace ft = std;
+#else
+	#include "lexicographical_compare.hpp"
+#endif
 
 extern std::string name;
 

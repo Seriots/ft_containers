@@ -1,32 +1,52 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   test.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/17 13:06:53 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/18 12:45:28 by lgiband          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
+#include <fstream>
 
-#include "is_integral.hpp"
+#include "vector.hpp"
+#include "utils.hpp"
 
-void	comparison_operator_test(void)
+void	display_vector(ft::vector<int> v)
 {
-	std::cout << ft::is_integral<int>::value << std::endl;
+	std::cout << v.size() << " " << v.capacity() << " " << v.max_size() << " " << v.empty() << " ";
+	for (size_t i = 0; i < v.size(); i++)
+		std::cout << v[i] << " ";
+	std::cout << std::endl;
+}
 
-	std::cout << ft::is_integral<float>::value << std::endl;
+void	display_vector(std::vector<int> v)
+{
+	std::cout << v.size() << " " << v.capacity() << " " << v.max_size() << " " << v.empty() << " ";
+	for (size_t i = 0; i < v.size(); i++)
+		std::cout << v[i] << " ";
+	std::cout << std::endl;
+}
 
-	std::cout << ft::is_integral<std::string>::value << std::endl;
+void	test_vector_constructor()
+{
+	std::cout << "<Vector Constructor>" << std::endl;
+	
+	std::vector<int> a;
+
+	a.push_back(1);
+	a.push_back(2);
+	a.push_back(3);
+	a.push_back(4);
+	a.push_back(5);
+
+	ft::vector<int> v1;
+	ft::vector<int> v2(v1);
+	ft::vector<int> v3((size_t)5, 42);
+	ft::vector<int> v4(a.begin(), a.end());
+	std::vector<int> v5(a.begin(), a.end());
+
+	//ft::vector<int> v5(std::allocator<int>);
+	display_vector(v4);
+	display_vector(v5);
 }
 
 int	main(void)
 {
-	comparison_operator_test();
-	comparison_operator_test2();
+	test_vector_constructor();
 }
