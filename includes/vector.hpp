@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/23 19:08:43 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/24 10:49:46 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,11 @@ namespace ft
 				//	_allocator.construct(_data + i, other._data[i]);
 			};
 
-			~vector() {_allocator.deallocate(_data, _capacity);};
+			~vector()
+			{
+				this->clear();
+				_allocator.deallocate(_data, _capacity);
+			};
 
 			vector& operator=(const vector& rhs)
 			{
@@ -146,19 +150,16 @@ namespace ft
 				_capacity = new_cap;
 				pointer tmp = _allocator.allocate(_capacity);
 				std::memcpy(tmp, _data, _size * sizeof(T));
-				// for (size_type i = 0; i < _size; i++)
-				// 	_allocator.construct(tmp + i, _data[i]);
 			};
 			size_type capacity() const {return (_capacity);};
 
 
 			/***********************Modifier********************************/
 			template <class InputIterator>
-			void assign (InputIterator first, InputIterator last)
+			void assign(InputIterator first, InputIterator last)
 			{
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(_data + i);
-
 				if ((size_type)(last - first) > _capacity && _data != NULL)
 					_allocator.deallocate(_data, _capacity);
 				_size = last - first;
@@ -167,12 +168,9 @@ namespace ft
 					_capacity = last - first;
 					_data = _allocator.allocate(_capacity);
 				}
-				std::memcpy(_data, &(*first), _size * sizeof(T));
-				// for (size_type i = 0; i < _size; i++)
-				// 	_allocator.construct(_data + i, *(first++));
 			};
 
-			void assign (size_type n, const value_type& val)
+			void assign(size_type n, const value_type& val)
 			{
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(_data + i);
@@ -189,7 +187,7 @@ namespace ft
 					_allocator.construct(_data + i, value_type(val));
 			};
 
-			void push_back (const value_type& val)
+			void push_back(const value_type& val)
 			{
 				if (_size == _capacity)
 				{
@@ -215,7 +213,7 @@ namespace ft
 				_size--;
 			};
 
-			iterator insert (iterator position, const value_type& val)
+			iterator insert(iterator position, const value_type& val)
 			{
 				size_type	pos;
 
@@ -245,7 +243,7 @@ namespace ft
 				return (position);
 			};
 	
-		    void insert (iterator position, size_type n, const value_type& val)
+		    void insert(iterator position, size_type n, const value_type& val)
 			{
 				size_type	pos;
 				size_type	previous_capacity = _capacity;
@@ -275,7 +273,7 @@ namespace ft
 			};
 	
 			template <class InputIterator>
-			void insert (iterator position, InputIterator first, InputIterator last)
+			void insert(iterator position, InputIterator first, InputIterator last)
 			{
 				size_type	pos;
 				size_type	previous_capacity = _capacity;
@@ -309,7 +307,7 @@ namespace ft
 				_size += n;
 			};
 			
-			iterator erase (iterator position)
+			iterator erase(iterator position)
 			{
 				size_type	pos;
 
@@ -320,7 +318,7 @@ namespace ft
 				return (position);
 			};
 
-			iterator erase( iterator first, iterator last )
+			iterator erase(iterator first, iterator last)
 			{
 				size_type	pos;
 				size_type	n;
@@ -341,14 +339,14 @@ namespace ft
 				_size = 0;
 			};
 
-			void swap( vector& other )
+			void swap(vector& other)
 			{
 				vector	tmp(other);
 				other = *this;
 				*this = tmp;
 			}
 
-			void resize (size_type n, value_type val = value_type())
+			void resize(size_type n, value_type val = value_type())
 			{
 				if (n > _capacity)
 				{
@@ -371,18 +369,6 @@ namespace ft
 	};
 
 	/******************Non-member functions************************/
-	template <class T>
-	bool	comparator_equal(const T& first, const T& second)
-	{
-		return (first == second);
-	}
-
-	template <class T>
-	bool	comparator_equal(T& first, T& second)
-	{
-		return (first == second);
-	}
-
 	template< class T, class Alloc >
 	bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs )
 	{

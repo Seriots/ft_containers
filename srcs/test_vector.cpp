@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/23 19:20:06 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/24 10:53:47 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,13 @@ void	test_vector_element_access(std::ofstream& out)
 	out << "v2[2] = " << v2[2] << std::endl;
 	out << "v.at(2) = " << v.at(2) << std::endl;
 	out << "v2.at(2) = " << v2.at(2) << std::endl;
+	out << "<Set: v[4] = 42>" << std::endl;
+	v[4] = 42;
+	out << "v[4] = " << v[4] << std::endl;
+	out << "<Set: v.at(3) = 21>" << std::endl;
+	v.at(3) = 21;
+	out << "v.at(3) = " << v.at(3) << std::endl;
+	out << "Get allocator: " << v.get_allocator().max_size() << std::endl;
 }
 
 void	test_vector_iterator(std::ofstream &out)
@@ -381,7 +388,7 @@ void	test_vector_insert_range(std::ofstream& out)
 
 	out << "<Set v: >" << std::endl;
 	display_vector(v, out);
-	out << "<Set: v2.insert(v2.begin() + 3, v.begin(), v.end())>" << std::endl;
+	out << "<Set: v2 = v2[0:4]v[:]v2[4:]>" << std::endl;
 	v2.insert(v2.begin() + 3, v.begin(), v.end());
 	display_vector(v2, out);
 	v2.push_back(42);
@@ -488,8 +495,52 @@ void	test_vector_resize(std::ofstream &out)
 	display_vector_content(v, out, "v.resize(20, 42): ");
 	v.resize(118, 21);
 	display_vector_content(v, out, "v.resize(118, 21): ");
-	v.resize(1000000, 5);
+	v.resize(100000, 5);
 	display_vector_content(v, out, "v.resize(100000, 5): ");
+    ft::vector<int> c;
+
+	c.push_back(1);
+	c.push_back(2);
+	c.push_back(3);
+    out << "The vector holds: ";
+    display_vector_content(c, out, "c: ");
+
+ 
+    c.resize(5);
+    out << "After resize up to 5: ";
+    display_vector_content(c, out, "c: ");
+
+ 
+    c.resize(2);
+    out << "After resize down to 2: ";
+    display_vector_content(c, out, "c: ");
+ 
+    c.resize(6, 4);
+    out << "After resize up to 6 (initializer = 4): ";
+    display_vector_content(c, out, "c: ");
+}
+
+void	test_vector_reserve(std::ofstream& out)
+{
+	out << "<Vector Reserve>" << std::endl;
+
+	ft::vector<int> v;
+
+	out << "<Set v.reserve(100)>" << std::endl;
+	v.reserve(100);
+	out << "v.capacity(): " << v.capacity() << std::endl;
+	out << "<Set v.reserve(1000)>" << std::endl;
+	v.reserve(1000);
+	out << "v.capacity(): " << v.capacity() << std::endl;
+	out << "<Set v.reserve(5)>" << std::endl;
+	v.reserve(5);
+	out << "v.capacity(): " << v.capacity() << std::endl;
+	out << "<Set v.reserve(0)>" << std::endl;
+	v.reserve(0);
+	out << "v.capacity(): " << v.capacity() << std::endl;
+	out << "<Set v.reserve(45465654)>" << std::endl;
+	v.reserve(45465654);
+	out << "v.capacity(): " << v.capacity() << std::endl;
 }
 
 void	test_vector(std::ofstream &out)
@@ -497,7 +548,7 @@ void	test_vector(std::ofstream &out)
 	out << name << "vector" << std::endl;
 
 		void	(*fonc[])(std::ofstream&) = {&test_vector_constructor, &test_vector_element_access, &test_vector_iterator,
-										&test_vector_comparison, &test_vector_assign,
+										&test_vector_comparison, &test_vector_assign, &test_vector_reserve,
 										&test_vector_pushback_ten, &test_vector_pushback_hundred, &test_vector_pushback_thousands,
 										&test_vector_pushback_too_many, &test_vector_pop, &test_vector_insert,
 										&test_vector_insert_toomany, &test_vector_insert_fill, &test_vector_insert_range,
