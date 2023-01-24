@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 12:53:53 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/23 11:35:09 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/24 12:05:50 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 	namespace ft = std;
 #else
 	#include "reverse_iterator.hpp"
+	#include "vector.hpp"
 #endif
 
 extern std::string name;
@@ -70,9 +71,9 @@ void	comparison_operator_test(std::ofstream &out)
 void	modification_operator_test(std::ofstream &out)
 {
 	out << "<Modification operators>" << std::endl;
-	std::vector<int> v;
+	ft::vector<int> v;
 
-	out << "<Set: std::vector, 1->2->3->4->5>" << std::endl;
+	out << "<Set: ft::vector, 1->2->3->4->5>" << std::endl;
 	v.push_back(1);
 	v.push_back(2);
 	v.push_back(3);
@@ -86,8 +87,8 @@ void	modification_operator_test(std::ofstream &out)
 
 	out << "<Set: x:end, y:begin>" << std::endl;
 
-	ft::reverse_iterator<std::vector<int>::iterator> x(v.begin() + 9);
-	ft::reverse_iterator<std::vector<int>::iterator> y(v.begin() + 7);
+	ft::reverse_iterator<ft::vector<int>::iterator> x(v.begin() + 9);
+	ft::reverse_iterator<ft::vector<int>::iterator> y(v.begin() + 7);
 	
 	out << "*x == " << *x << std::endl;
 	out << "*y == " << *y << std::endl;
@@ -144,16 +145,16 @@ void	modification_operator_test(std::ofstream &out)
 void	access_operator_test(std::ofstream &out)
 {
 	out << "<Modification operators>" << std::endl;
-	std::vector<int> v;
+	ft::vector<int> v;
 
-	out << "<Set: std::vector, 1->2->3->4->5>" << std::endl;
+	out << "<Set: ft::vector, 1->2->3->4->5>" << std::endl;
 	v.push_back(1);
 	v.push_back(2);
 	v.push_back(3);
 	v.push_back(4);
 	v.push_back(5);
 
-	ft::reverse_iterator<std::vector<int>::iterator> x(v.end());
+	ft::reverse_iterator<ft::vector<int>::iterator> x(v.end());
 	
 	out << "*x == " << *x << std::endl;
 	out << "x[0] == " << x[0] << std::endl;
@@ -166,9 +167,9 @@ void	access_operator_test(std::ofstream &out)
 void	constructor_test(std::ofstream &out)
 {
 	out << "<Constructor reverse_iterator test>" << std::endl;
-	std::vector<int> v;
+	ft::vector<int> v;
 
-	out << "<Set: std::vector, 1->2->3->4->5>" << std::endl;
+	out << "<Set: ft::vector, 1->2->3->4->5>" << std::endl;
 	v.push_back(1);
 	v.push_back(2);
 	v.push_back(3);
@@ -176,9 +177,9 @@ void	constructor_test(std::ofstream &out)
 	v.push_back(5);
 
 	out << "<Set: x:end, y:begin>" << std::endl;
-	ft::reverse_iterator<std::vector<int>::iterator> x(v.end());
-	ft::reverse_iterator<std::vector<int>::iterator> y;
-	ft::reverse_iterator<std::vector<int>::iterator> z(x);
+	ft::reverse_iterator<ft::vector<int>::iterator> x(v.end());
+	ft::reverse_iterator<ft::vector<int>::iterator> y;
+	ft::reverse_iterator<ft::vector<int>::iterator> z(x);
 
 	y = x;
 	out << "*x == " << *x << std::endl;

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/23 14:39:23 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/24 11:16:55 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	main(void)
 	
 	void	(*fonc[])(std::ofstream&) = {&stack_test_with_vector, &stack_test_with_deque,
 										&reverse_iterator_test,
-										&test_equal, &test_lexicographical_compare, &test_vector};
+										&test_equal, &test_lexicographical_compare, &test_pair};//&test_vector
 
 	// &test_is_integral &test_enable_if need to use c++11
 

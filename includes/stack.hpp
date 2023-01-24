@@ -6,18 +6,18 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 09:47:52 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/17 12:47:12 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/24 12:07:12 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
-#include <vector> //change this to my vector
+#include "vector.hpp" //change this to my vector
 
 namespace ft
 {
-	template <class T, class Container = std::vector<T> >
+	template <class T, class Container = ft::vector<T> >
 	class stack
 	{
 		public:

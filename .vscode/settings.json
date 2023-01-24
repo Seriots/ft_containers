@@ -47,7 +47,14 @@
 		"streambuf": "cpp",
 		"typeinfo": "cpp",
 		"list": "cpp",
-		"cstring": "cpp"
+		"cstring": "cpp",
+		"compare": "cpp",
+		"complex": "cpp",
+		"concepts": "cpp",
+		"numbers": "cpp",
+		"ranges": "cpp",
+		"span": "cpp",
+		"iomanip": "cpp"
 	},
 	"C_Cpp.intelliSenseEngineFallback": "disabled"
 }
