@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/25 22:09:05 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/25 22:51:52 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,9 +341,19 @@ namespace ft
 				return (iterator(__findMinimum(_root)));
 			};
 
+			reverse_iterator	rbegin()
+			{
+				return (reverse_iterator(__findMaximum(_root)));
+			};
+
 			iterator	end()
 			{
-				return (iterator(NULL));
+				return (iterator(__findMaximum(_root)));
+			};
+
+			reverse_iterator	rend()
+			{
+				return (reverse_iterator(__findMinimum(_root)));
 			};
 
 			std::pair<iterator, bool>	insert(const value_type& val)

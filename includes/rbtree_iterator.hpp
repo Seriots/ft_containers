@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 19:51:11 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/25 22:37:04 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/25 22:41:13 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ namespace ft
 			typedef V							&reference;
 			typedef ft::node<value_type>		node_type;
 			typedef std::ptrdiff_t				difference_type;
+			typedef std::bidirectional_iterator_tag	iterator_category;
 
 		private:
 			node_type	*_node;

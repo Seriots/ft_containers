@@ -26,13 +26,15 @@ int	main(void)
 	for (ft::rbTree<int, int>::iterator it = tree.begin(); it != tree.end(); it++)
 		std::cout << it->first << std::endl;
 
-	ft::rbTree<int, int>::iterator itest = tree.begin();
-	std::map<int, int>::iterator itest2 = map.begin();
+	for (std::map<int, int>::reverse_iterator it = map.rbegin(); it != map.rend(); it++)
+		std::cout << it->first << std::endl;
+
+	for (ft::rbTree<int, int>::reverse_iterator it = tree.rbegin(); it != tree.rend(); it++)
+		std::cout <<it->first  << std::endl;
 	//std::cout << (itest+2)->first << std::endl;
 	//itest2 = itest2 + 2;
 	
-	std::cout << (itest[3]).first << std::endl;
-	std::cout << (itest2)->first << std::endl;
+	//std::cout << (itest[3]).first << std::endl;
 
 	//tree.display();
 }
