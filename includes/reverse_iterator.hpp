@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 12:15:19 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/19 14:11:32 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/25 21:10:59 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ namespace ft
 			iterator_type base() const { return (this->current); };
 			reference operator*() const { return (*(this->base() - 1)); };
 			pointer operator->() const { return (&(*(this->base() - 1))); };
-			reference operator[](difference_type n) const { return *(*this + n); };
+			reference operator[](difference_type n) const { return *((*this) + n); };
 			
 			/*******************Manipulation Function*******************/
 			reverse_iterator& operator++() { --this->current; return (*this); };

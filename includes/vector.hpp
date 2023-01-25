@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/24 10:49:46 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/25 20:20:45 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ namespace ft
 
 			vector( const vector& other ) : _size(other._size), _capacity(other._capacity), _data(NULL), _allocator(other._allocator)
 			{
-				_data = _allocator.allocate(_capacity);
+				_data = _allocator.allocate(_size);
 				std::memcpy(_data, other._data, _size * sizeof(T));
 				//for (size_type i = 0; i < _size; i++)
 				//	_allocator.construct(_data + i, other._data[i]);

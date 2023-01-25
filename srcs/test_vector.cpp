@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/24 10:53:47 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/25 20:12:03 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,16 @@ extern std::string name;
 void	display_vector(ft::vector<int> &v, std::ofstream& out)
 {
 	out << v.size() << " " << v.capacity() << " " << v.empty() << " ";
-	for (size_t i = 0; i < v.size(); i++)
-		out << v[i] << " ";
+	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++ )
+		out << *it << " ";
 	out << std::endl;
 }
 
 void	display_vector_content(ft::vector<int> &v, std::ofstream& out, std::string prompt)
 {
 	out << prompt << " ";
-	for (size_t i = 0; i < v.size(); i++)
-		out << v[i] << " ";
+	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++ )
+		out << *it << " ";
 	out << std::endl;
 }
 
