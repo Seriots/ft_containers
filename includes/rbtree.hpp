@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/25 22:51:52 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 13:21:40 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,21 +51,44 @@ namespace ft
 
 		private:
 			node_type			*_root;
+			node_type			*_end;
 			allocator_type		_allocator;
 			size_type			_size;
 			key_compare			_comp;
 
-			node_type	*__setNodeValue(node_type *node, const value_type &val)
+			void	__setNodeValue(node_type *node, const value_type &val)
 			{
-				node_type	*newNode = _allocator.allocate(1);
-				_allocator.construct(newNode, node_type(val));
-				return (node);
+				node_type	tmp;
+
+				tmp.setParent(node->getParent());
+				tmp.setLeft(node->getLeft());
+				tmp.setRight(node->getRight());
+				_allocator.construct(node, node_type(val));
+				node->setParent(tmp.getParent());
+				node->setLeft(tmp.getLeft());
+				node->setRight(tmp.getRight());
+			};
+
+			void	__linkEnd(node_type *node)
+			{
+				if (node == NULL)
+				{
+					_allocator.construct(_end, value_type());
+					return ;
+				}
+				_allocator.construct(_end, node->getValue());
+				_end->setParent(NULL);
+				_end->setRight(node);
+				_end->setLeft(node);
+				node->setParent(_end);
 			};
 			
 			void __replaceParentsChild(node_type *parent, node_type *oldChild, node_type *newChild)
 			{
-				if (parent == NULL)
+				if (parent == _end)
+				{
 					_root = newChild;
+				}
 				else if (parent->getLeft() == oldChild)
 					parent->setLeft(newChild);
 				else if (parent->getRight() == oldChild)
@@ -116,7 +139,7 @@ namespace ft
 
 			node_type	*__getSibling(node_type *node)
 			{
-				if (node->getParent() == NULL)
+				if (node->getParent() == NULL || node->getParent() == _end)
 					return (NULL);
 				if (node == node->getParent()->getLeft())
 					return (node->getParent()->getRight());
@@ -137,7 +160,7 @@ namespace ft
 
 			bool	__isBlack(node_type *node)
 			{
-				if (node == NULL)
+				if (node == NULL || node == _end)
 					return (true);
 				return (node->getColor() == color_black);
 			};
@@ -148,14 +171,14 @@ namespace ft
 				node_type	*parent;
 				node_type	*uncle;
 
-				if (node == NULL)
+				if (node == NULL || node == _end)
 					return ;
-				parent = node->getParent();
-				if (parent == NULL)
+				if (node == _root)
 				{
 					node->setColor(color_black);
 					return ;
 				}
+				parent = node->getParent();
 				if (parent->getColor() == color_black)
 					return ;
 				
@@ -316,7 +339,7 @@ namespace ft
 
 			node_type	*__findMinimum(node_type *node)
 			{
-				if (node == NULL)
+				if (node == NULL)// || node == _end
 					return (NULL);
 				while (node->getLeft() != NULL)
 					node = node->getLeft();
@@ -325,7 +348,7 @@ namespace ft
 
 			node_type	*__findMaximum(node_type *node)
 			{
-				if (node == NULL)
+				if (node == NULL)// || node == _end
 					return (NULL);
 				while (node->getRight() != NULL)
 					node = node->getRight();
@@ -333,30 +356,16 @@ namespace ft
 			};
 
 		public:
-			rbTree(): _root(NULL) {};
-			~rbTree() {};
+			rbTree(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type()); };
+			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); };
 
-			iterator	begin()
-			{
-				return (iterator(__findMinimum(_root)));
-			};
+			iterator			begin() { return (iterator(__findMinimum(_root))); };
+			reverse_iterator	rbegin() { return (reverse_iterator(_end)); };
 
-			reverse_iterator	rbegin()
-			{
-				return (reverse_iterator(__findMaximum(_root)));
-			};
-
-			iterator	end()
-			{
-				return (iterator(__findMaximum(_root)));
-			};
-
-			reverse_iterator	rend()
-			{
-				return (reverse_iterator(__findMinimum(_root)));
-			};
-
-			std::pair<iterator, bool>	insert(const value_type& val)
+			iterator			end() { return (iterator(_end)); };
+			reverse_iterator	rend() { return (reverse_iterator(__findMinimum(_root))); };
+			
+			ft::pair<iterator, bool>	insert(const value_type& val)
 			{
 				node<value_type>	*new_node;
 				node_type	*tmp = _root;
@@ -370,14 +379,14 @@ namespace ft
 					else if (_comp(tmp->getValue().first, val.first))
 						tmp = tmp->getRight();
 					else
-						return (std::pair<iterator, bool>(iterator(), false)); // key already exists
+						return (ft::pair<iterator, bool>(iterator(), false)); // key already exists
 				}
 				
 				new_node = _allocator.allocate(1);
 				_allocator.construct(new_node, node_type(val));
 				new_node->setColor(color_red);
 				
-				if (parent == NULL)
+				if (_root == NULL)
 					_root = new_node;
 				else if (_comp(parent->getValue().first, val.first))
 					parent->setRight(new_node);
@@ -387,7 +396,8 @@ namespace ft
 
 				__balanceTreeInsert(new_node);
 				_size++;
-				return (std::pair<iterator, bool>(iterator(new_node), true));
+				__linkEnd(_root);
+				return (ft::pair<iterator, bool>(iterator(new_node), true));
 			};
 
 			node_type	*find(const Key &key)
@@ -410,10 +420,10 @@ namespace ft
 			{
 				node_type	*node = find(key);
 				node_type	*movedUpNode;
-				node_type	*Successor;
+				node_type	*successor;
 				bool		deletedColor;
 
-				if (node == NULL)
+				if (node == NULL || node == _end)
 					return ;
 				
 				deletedColor = node->getColor();
@@ -421,12 +431,11 @@ namespace ft
 					movedUpNode = __removeWithZeroOrOneChild(node, deletedColor);
 				else
 				{
-					//reverse in-order successor
-					Successor = __findMaximum(node->getLeft()); // find the in-order successor __findMinimum(node->getRight());
-					//node = __setNodeValue(node, Successor->getValue());
-					_allocator.construct(node, node_type(Successor->getValue()));
-					deletedColor = Successor->getColor();
-					movedUpNode = __removeWithZeroOrOneChild(Successor, Successor->getColor());
+					//reverse in-order successor 
+					successor = __findMaximum(node->getLeft()); // find the in-order successor __findMinimum(node->getRight());
+					__setNodeValue(node, successor->getValue());
+					deletedColor = successor->getColor();
+					movedUpNode = __removeWithZeroOrOneChild(successor, successor->getColor());
 				}
 
 				if (deletedColor == color_black)
@@ -439,7 +448,14 @@ namespace ft
 						_allocator.deallocate(movedUpNode, 1);
 					}
 				}
+				__linkEnd(_root);
 				_size--;
+			};
+
+			void	display() const
+			{
+				if (_root != NULL)
+					_root->display();
 			};
 	};
 }

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 19:51:11 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/25 22:41:13 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 11:38:22 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,15 @@ namespace ft
 				node_type	*tmp = node;
 
 				if (tmp == NULL)
+				{
 					return (NULL);
+				}
+				if (tmp->getParent() == NULL)
+				{
+					while (tmp->getLeft() != NULL)
+						tmp = tmp->getLeft();
+					return (tmp);
+				}
 				else if (tmp->getRight() != NULL)
 				{
 					tmp = tmp->getRight();
@@ -48,7 +56,11 @@ namespace ft
 				else
 				{
 					while (tmp->getParent() != NULL && tmp->getParent()->getRight() == tmp)
+					{
 						tmp = tmp->getParent();
+					}
+					if (tmp->getParent() == NULL)
+						return (tmp);
 					return (tmp->getParent());
 				}
 			};
@@ -58,7 +70,15 @@ namespace ft
 				node_type	*tmp = node;
 
 				if (tmp == NULL)
+				{
 					return (NULL);
+				}
+				if (tmp->getParent() == NULL)
+				{
+					while (tmp->getRight() != NULL)
+						tmp = tmp->getRight();
+					return (tmp);
+				}
 				else if (tmp->getLeft() != NULL)
 				{
 					tmp = tmp->getLeft();
@@ -72,7 +92,7 @@ namespace ft
 						tmp = tmp->getParent();
 					return (tmp->getParent());
 				}
-			}
+			};
 
 		public:
 			rbTreeIterator(): _node(NULL) {};
