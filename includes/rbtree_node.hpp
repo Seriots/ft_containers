@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 21:11:56 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 12:47:45 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 17:17:21 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ namespace ft
 			bool				is_delete;
 			
 		public:
-			node() : value(), parent(NULL), left(NULL), right(NULL), color(color_black), is_delete(0) {};
+			node() : value(), parent(NULL), left(NULL), right(NULL), color(color_black), is_delete(0) { };
 			node(const value_type& val) : value(val),  parent(NULL), left(NULL), right(NULL), color(color_black), is_delete(0) {};
+
 			~node() {};
-			
+
 			void	setParent(node *p) { parent = p; };
 			void	setLeft(node *l) { left = l; };
 			void	setRight(node *r) { right = r; };

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 13:21:40 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 17:18:36 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,8 +355,48 @@ namespace ft
 				return (node);
 			};
 
+			void	__buildTree(node_type *from, node_type *to)
+			{
+				node_type	*tmp;
+				bool		color;
+
+				tmp = to->getParent();
+				color = to->getColor();
+				_allocator.construct(to, from->getValue());
+				to->setParent(tmp);
+				to->setColor(color);
+				if (from->getLeft() != NULL)
+				{
+					to->setLeft(_allocator.allocate(1));
+					to->getLeft()->setParent(to);
+					to->getLeft()->setColor(from->getLeft()->getColor());
+					__buildTree(from->getLeft(), to->getLeft());
+				}
+				if (from->getRight() != NULL)
+				{
+					to->setRight(_allocator.allocate(1));
+					to->getRight()->setParent(to);
+					to->getRight()->setColor(from->getRight()->getColor());
+					__buildTree(from->getRight(), to->getRight());
+				}
+			}
+
 		public:
-			rbTree(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type()); };
+			rbTree(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
+			
+			rbTree(rbTree const &other): _root(NULL), _end(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
+			{
+				if (*this != other)
+				{
+					_root = _allocator.allocate(1);
+					
+					__buildTree(other.getRoot(), _root);
+					_end = _allocator.allocate(1);
+					__linkEnd(_root);
+				}
+			};
+			
+			
 			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); };
 
 			iterator			begin() { return (iterator(__findMinimum(_root))); };
@@ -364,6 +404,10 @@ namespace ft
 
 			iterator			end() { return (iterator(_end)); };
 			reverse_iterator	rend() { return (reverse_iterator(__findMinimum(_root))); };
+
+			allocator_type		get_allocator() const { return (_allocator); };
+			size_type			size() const { return (_size); };
+			node_type			*getRoot() const { return (_root); };
 			
 			ft::pair<iterator, bool>	insert(const value_type& val)
 			{
@@ -456,6 +500,13 @@ namespace ft
 			{
 				if (_root != NULL)
 					_root->display();
+			};
+
+			bool	operator!=(rbTree const &other) const
+			{
+				if (_size != other.size() || _root != other.getRoot())
+					return (true);
+				return (false);
 			};
 	};
 }
