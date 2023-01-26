@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/25 20:20:45 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 17:28:28 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ namespace ft
 					_capacity = last - first;
 					_data = _allocator.allocate(_capacity);
 				}
+				std::memcpy(_data, first, _size * sizeof(T));
 			};
 
 			void assign(size_type n, const value_type& val)

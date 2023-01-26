@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 17:18:36 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 17:21:14 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -394,6 +394,23 @@ namespace ft
 					_end = _allocator.allocate(1);
 					__linkEnd(_root);
 				}
+			};
+
+			rbTree	&operator=(rbTree const &other)
+			{
+				if (*this != other)
+				{
+					_allocator.destroy(_end);
+					_allocator.deallocate(_end, 1);
+					_allocator.destroy(_root);
+					_allocator.deallocate(_root, 1);
+					_root = _allocator.allocate(1);
+					__buildTree(other.getRoot(), _root);
+					_end = _allocator.allocate(1);
+					__linkEnd(_root);
+					_size = other.size();
+				}
+				return (*this);
 			};
 			
 			

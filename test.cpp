@@ -40,6 +40,17 @@ int	main(void)
 	std::cout << "\033[1;34mTree2: \033[0m" << std::endl;
 	tree2.display();
 
+	tree2 = tree;
+
+	std::cout << "\033[1;34mTree2: \033[0m" << std::endl;
+	tree2.display();
+
+	tree2.remove(10);
+	std::cout << "\033[1;34mTree1: \033[0m" << std::endl;
+	tree.display();
+	
+	std::cout << "\033[1;34mTree2: \033[0m" << std::endl;
+	tree2.display();
 	//std::cout << "\033[1;34mIterator ++ :\033[0m" << std::endl;
 	//for (std::map<int, int>::iterator it = map.begin(); it != map.end(); it++)
 	//	std::cout << it->first << std::endl;

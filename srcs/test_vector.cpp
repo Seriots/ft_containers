@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/25 20:12:03 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/26 17:27:17 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ void	test_vector_assign(std::ofstream &out)
 	ft::vector<int> v2(a2.begin(), a2.end());
 	ft::vector<int> v3(a.begin(), a.end());
 
-	out << "<Set v={1, 2, 3, 4, 5}>\n<Set v2={6, 7, 8, 9, 10, 11, 12, 13, 14, 15}>\n<Set v={1, 2, 3, 4, 5}>" << std::endl;
+	out << "<Set v={1, 2, 3, 4, 5}>\n<Set v2={6, 7, 8, 9, 10, 11, 12, 13, 14, 15}>\n<Set v3={1, 2, 3, 4, 5}>" << std::endl;
 	
 	display_vector(v, out);
 
