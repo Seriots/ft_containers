@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 16:50:21 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 17:58:41 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ namespace ft
 		public:
 			typedef Key				 							key_type;
 			typedef T											mapped_type;
-			typedef pair<const key_type, mapped_type>			value_type;
+			typedef ft::pair<const key_type, mapped_type>		value_type;
 			typedef Compare										key_compare;
 			typedef Allocator									allocator_type;
 			typedef typename allocator_type::reference			reference;
@@ -52,7 +52,6 @@ namespace ft
 		private:
 			node_type			*_root;
 			node_type			*_end;
-			node_type			*_start;
 			allocator_type		_allocator;
 			size_type			_size;
 			key_compare			_comp;
@@ -408,18 +407,20 @@ namespace ft
 			};
 
 		public:
-			rbTree(): _root(NULL), _end(0), _start(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
+			rbTree(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
 			
-			rbTree(rbTree const &other): _root(NULL), _end(0), _start(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
+			rbTree(rbTree const &other): _root(NULL), _end(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
 			{
 				if (*this != other)
 				{
-					_root = _allocator.allocate(1);
-					
-					__buildTree(other.getRoot(), _root);
 					_end = _allocator.allocate(1);
+					_allocator.construct(_end, node_type());
+					_size = other.size();
+					if (other.getRoot() == NULL)
+						return ;
+					_root = _allocator.allocate(1);
+					__buildTree(other.getRoot(), _root);
 					__linkEnd(_root);
-					_start = __findMinimum(_root);
 				}
 			};
 
@@ -427,16 +428,15 @@ namespace ft
 			{
 				if (*this != other)
 				{
-					_allocator.destroy(_end);
-					_allocator.deallocate(_end, 1);
-					_allocator.destroy(_root);
-					_allocator.deallocate(_root, 1);
+					_allocator.construct(_end, node_type());
+					__clearTree(_root);
+					_root = NULL;
+					_size = other.size();
+					if (other.getRoot() == NULL)
+						return (*this);
 					_root = _allocator.allocate(1);
 					__buildTree(other.getRoot(), _root);
-					_end = _allocator.allocate(1);
 					__linkEnd(_root);
-					_size = other.size();
-					_start = __findMinimum(_root);
 				}
 				return (*this);
 			};
@@ -444,18 +444,21 @@ namespace ft
 			
 			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); __clearTree(_root); };
 
-			iterator			begin() { return (iterator(__findMinimum(_root))); };
-			const_iterator		begin() const { return(const_iterator(__findMinimum(_root))); };
+			iterator			begin() {return ((_size == 0 || _root == NULL) ? iterator(_end) : iterator(__findMinimum(_root)));};
+			const_iterator		begin() const {return ((_size == 0 || _root == NULL) ? const_iterator(_end) : const_iterator(__findMinimum(_root)));};
+
 			reverse_iterator	rbegin() { return (reverse_iterator(_end)); };
 			const_reverse_iterator	rbegin() const { return (const_reverse_iterator(_end)); };
 
 			iterator			end() { return (iterator(_end)); };
 			const_iterator		end() const { return (const_iterator(_end)); };
-			reverse_iterator	rend() { return (reverse_iterator(__findMinimum(_root))); };
-			const_reverse_iterator	rend() const { return (const_reverse_iterator(__findMinimum(_root))); };
+
+			reverse_iterator	rend() {return (_size == 0 || _root == NULL) ? reverse_iterator(_end) : reverse_iterator(__findMinimum(_root));};
+			const_reverse_iterator	rend() const {return (_size == 0 || _root == NULL) ? const_reverse_iterator(_end) : const_reverse_iterator(__findMinimum(_root));};
 
 			allocator_type		get_allocator() const { return (_allocator); };
 			size_type			size() const { return (_size); };
+			bool				empty() const { return (_size == 0); };
 			node_type			*getRoot() const { return (_root); };
 			
 			ft::pair<iterator, bool>	insert(const value_type& val)
@@ -490,7 +493,6 @@ namespace ft
 				__balanceTreeInsert(new_node);
 				_size++;
 				__linkEnd(_root);
-				_start = __findMinimum(_root);
 				return (ft::pair<iterator, bool>(iterator(new_node), true));
 			};
 
@@ -543,7 +545,6 @@ namespace ft
 					}
 				}
 				__linkEnd(_root);
-				_start = __findMinimum(_root);
 				_size--;
 			};
 
@@ -552,7 +553,6 @@ namespace ft
 				__clearTree(_root);
 				_root = NULL;
 				_size = 0;
-				_start = _end;
 			};
 
 			// void	display() const

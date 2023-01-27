@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 13:24:47 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/24 11:16:41 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 16:59:18 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ void	test_equal(std::ofstream &out);
 void	test_lexicographical_compare(std::ofstream &out);
 void	test_vector(std::ofstream &out);
 void	test_pair(std::ofstream& out);
+void	test_map(std::ofstream &out);
 
 
