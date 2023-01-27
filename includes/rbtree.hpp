@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 14:00:23 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 16:50:21 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ namespace ft
 					__rightRotation(node->getParent());
 			};
 
-			bool	__isBlack(node_type *node)
+			bool	__isBlack(node_type *node) const
 			{
 				if (node == NULL || node == _end)
 					return (true);
@@ -338,7 +338,7 @@ namespace ft
 				}
 			};
 
-			node_type	*__findMinimum(node_type *node)
+			node_type	*__findMinimum(node_type *node) const
 			{
 				if (node == NULL)// || node == _end
 					return (NULL);
@@ -347,7 +347,7 @@ namespace ft
 				return (node);
 			};
 
-			node_type	*__findMaximum(node_type *node)
+			node_type	*__findMaximum(node_type *node) const
 			{
 				if (node == NULL)// || node == _end
 					return (NULL);
@@ -380,7 +380,32 @@ namespace ft
 					to->getRight()->setColor(from->getRight()->getColor());
 					__buildTree(from->getRight(), to->getRight());
 				}
-			}
+			};
+
+			void	__clearTree(node_type *node)
+			{
+				if (node == NULL)
+					return ;
+				__clearTree(node->getLeft());
+				__clearTree(node->getRight());
+				_allocator.destroy(node);
+				_allocator.deallocate(node, 1);
+			};
+
+			bool	__isEqual(node_type *node1, node_type *node2) const
+			{
+				if (node1 == NULL && node2 == NULL)
+					return (true);
+				if (node1 == NULL || node2 == NULL)
+					return (false);
+				if (node1->getValue() != node2->getValue())
+					return (false);
+				if (!__isEqual(node1->getLeft(), node2->getLeft()))
+					return (false);
+				if (!__isEqual(node1->getRight(), node2->getRight()))
+					return (false);
+				return (true);
+			};
 
 		public:
 			rbTree(): _root(NULL), _end(0), _start(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
@@ -417,17 +442,17 @@ namespace ft
 			};
 			
 			
-			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); };
+			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); __clearTree(_root); };
 
-			iterator			begin() { return (iterator(_start)); };
-			const_iterator		begin() const { return(const_iterator(_start)); };
+			iterator			begin() { return (iterator(__findMinimum(_root))); };
+			const_iterator		begin() const { return(const_iterator(__findMinimum(_root))); };
 			reverse_iterator	rbegin() { return (reverse_iterator(_end)); };
 			const_reverse_iterator	rbegin() const { return (const_reverse_iterator(_end)); };
 
 			iterator			end() { return (iterator(_end)); };
 			const_iterator		end() const { return (const_iterator(_end)); };
-			reverse_iterator	rend() { return (reverse_iterator(_start)); };
-			const_reverse_iterator	rend() const { return (const_reverse_iterator(_start)); };
+			reverse_iterator	rend() { return (reverse_iterator(__findMinimum(_root))); };
+			const_reverse_iterator	rend() const { return (const_reverse_iterator(__findMinimum(_root))); };
 
 			allocator_type		get_allocator() const { return (_allocator); };
 			size_type			size() const { return (_size); };
@@ -469,7 +494,7 @@ namespace ft
 				return (ft::pair<iterator, bool>(iterator(new_node), true));
 			};
 
-			node_type	*find(const Key &key)
+			node_type	*find(const Key &key) const
 			{
 				node_type *tmp = _root;
 
@@ -522,17 +547,27 @@ namespace ft
 				_size--;
 			};
 
-			void	display() const
+			void	clear()
 			{
-				if (_root != NULL)
-					_root->display();
+				__clearTree(_root);
+				_root = NULL;
+				_size = 0;
+				_start = _end;
 			};
 
-			bool	operator!=(rbTree const &other) const
+			// void	display() const
+			// {
+			// 	if (_root != NULL)
+			// 		_root->display();
+			// };
+
+			bool	operator==(rbTree const &other) const
 			{
-				if (_size != other.size() || _root != other.getRoot())
+				if (_size == other.size() && __isEqual(_root, other.getRoot()))
 					return (true);
 				return (false);
 			};
+
+			bool	operator!=(rbTree const &other) const { return (!(*this == other)); };
 	};
 }

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 21:11:56 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 17:17:21 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 16:50:28 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,26 +55,26 @@ namespace ft
 			bool	getColor() const { return color; };
 			bool	getDelete() const { return is_delete; };
 
-			void	display()
-			{
-				std::cout << this->getValue().first << "-";
-				if (this->getColor() == color_red)
-					std::cout << "red ::: ";
-				else
-					std::cout << "black ::: ";
-				if (this->getParent()->getParent() != NULL && this->getParent())
-				{
-					if (this->getParent()->getLeft() == this)
-						std::cout << "left (from " << this->getParent()->getValue().first << ")" << std::endl;
-					else
-						std::cout << "right(from " << this->getParent()->getValue().first << ")" << std::endl;
-				}
-				else
-					std::cout << "root" << std::endl;
-				if (this->getLeft() != NULL)
-					this->getLeft()->display();
-				if (this->getRight() != NULL)
-					this->getRight()->display();
-			};
+			// void	display()
+			// {
+			// 	std::cout << this->getValue().first << "-";
+			// 	if (this->getColor() == color_red)
+			// 		std::cout << "red ::: ";
+			// 	else
+			// 		std::cout << "black ::: ";
+			// 	if (this->getParent()->getParent() != NULL && this->getParent())
+			// 	{
+			// 		if (this->getParent()->getLeft() == this)
+			// 			std::cout << "left (from " << this->getParent()->getValue().first << ")" << std::endl;
+			// 		else
+			// 			std::cout << "right(from " << this->getParent()->getValue().first << ")" << std::endl;
+			// 	}
+			// 	else
+			// 		std::cout << "root" << std::endl;
+			// 	if (this->getLeft() != NULL)
+			// 		this->getLeft()->display();
+			// 	if (this->getRight() != NULL)
+			// 		this->getRight()->display();
+			// };
 	};
 }
