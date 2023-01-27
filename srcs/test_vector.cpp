@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 17:27:17 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 13:26:59 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ void	test_vector_iterator(std::ofstream &out)
 	a.push_back(5);
 
 	ft::vector<int> v(a.begin(), a.end());
+	const ft::vector<int> v2(a.begin(), a.end());
 
 	out << "<Set: v={1, 2, 3, 4, 5}>" << std::endl;
 
@@ -143,6 +144,42 @@ void	test_vector_iterator(std::ofstream &out)
 	out << "v.end() - 2 = " << *(v.end() - 2) << std::endl;
 	out << "v.rbegin() + 2 = " << *(v.rbegin() + 2) << std::endl;
 	out << "v.rend() - 2 = " << *(v.rend() - 2) << std::endl;
+
+	out << "<Iterator ++>" << std::endl;
+	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++ )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Iterator -->" << std::endl;
+	for (ft::vector<int>::iterator it = v.end() - 1; it != v.begin() - 1; it-- )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Reverse Iterator ++>" << std::endl;
+	for (ft::vector<int>::reverse_iterator it = v.rbegin(); it != v.rend(); it++ )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Reverse Iterator -->" << std::endl;
+	for (ft::vector<int>::reverse_iterator it = v.rend() - 1; it != v.rbegin() - 1; it-- )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Const Iterator ++>" << std::endl;
+	for (ft::vector<int>::const_iterator it = v.begin(); it != v.end(); it++ )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Const Iterator -->" << std::endl;
+	for (ft::vector<int>::const_iterator it = v.end() - 1; it != v.begin() - 1; it-- )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Const Reverse Iterator ++>" << std::endl;
+	ft::vector<int>::const_reverse_iterator ite = v.rend();
+	for (ft::vector<int>::const_reverse_iterator it = v.rbegin(); it != ite; it++ )
+		out << *it << " ";
+	out << std::endl;
+	out << "<Const Reverse Iterator -->" << std::endl;
+	ite = v.rbegin() - 1;
+	for (ft::vector<int>::const_reverse_iterator it = v.rend() - 1; it != ite; it-- )
+		out << *it << " ";
+	out << std::endl;
+	
 }
 
 void	test_vector_comparison(std::ofstream &out)

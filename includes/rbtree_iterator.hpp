@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 19:51:11 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 11:38:22 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 13:41:15 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,20 @@
 #include <memory>
 
 #include "rbtree_node.hpp"
+#include "select_const_type.hpp"
 
 namespace ft
 {
-	template <class V>
+	template <class V, bool isConst = false>
 	class rbTreeIterator
 	{
 		public:
 			typedef V							value_type;
-			typedef V							*pointer;
-			typedef V							&reference;
 			typedef ft::node<value_type>		node_type;
 			typedef std::ptrdiff_t				difference_type;
 			typedef std::bidirectional_iterator_tag	iterator_category;
+			typedef typename ft::select_const_type<isConst, value_type*, const value_type*>::type	pointer;
+			typedef typename ft::select_const_type<isConst, value_type&, const value_type&>::type	reference;
 
 		private:
 			node_type	*_node;

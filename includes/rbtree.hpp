@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 17:21:14 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 14:00:23 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ namespace ft
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
 			typedef ft::rbTreeIterator<value_type>				iterator;
-			typedef ft::rbTreeIterator<const value_type>		const_iterator;			
+			typedef ft::rbTreeIterator<value_type, true>		const_iterator;		
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			typedef typename allocator_type::difference_type	difference_type;
@@ -52,6 +52,7 @@ namespace ft
 		private:
 			node_type			*_root;
 			node_type			*_end;
+			node_type			*_start;
 			allocator_type		_allocator;
 			size_type			_size;
 			key_compare			_comp;
@@ -382,9 +383,9 @@ namespace ft
 			}
 
 		public:
-			rbTree(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
+			rbTree(): _root(NULL), _end(0), _start(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
 			
-			rbTree(rbTree const &other): _root(NULL), _end(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
+			rbTree(rbTree const &other): _root(NULL), _end(0), _start(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
 			{
 				if (*this != other)
 				{
@@ -393,6 +394,7 @@ namespace ft
 					__buildTree(other.getRoot(), _root);
 					_end = _allocator.allocate(1);
 					__linkEnd(_root);
+					_start = __findMinimum(_root);
 				}
 			};
 
@@ -409,6 +411,7 @@ namespace ft
 					_end = _allocator.allocate(1);
 					__linkEnd(_root);
 					_size = other.size();
+					_start = __findMinimum(_root);
 				}
 				return (*this);
 			};
@@ -416,11 +419,15 @@ namespace ft
 			
 			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); };
 
-			iterator			begin() { return (iterator(__findMinimum(_root))); };
+			iterator			begin() { return (iterator(_start)); };
+			const_iterator		begin() const { return(const_iterator(_start)); };
 			reverse_iterator	rbegin() { return (reverse_iterator(_end)); };
+			const_reverse_iterator	rbegin() const { return (const_reverse_iterator(_end)); };
 
 			iterator			end() { return (iterator(_end)); };
-			reverse_iterator	rend() { return (reverse_iterator(__findMinimum(_root))); };
+			const_iterator		end() const { return (const_iterator(_end)); };
+			reverse_iterator	rend() { return (reverse_iterator(_start)); };
+			const_reverse_iterator	rend() const { return (const_reverse_iterator(_start)); };
 
 			allocator_type		get_allocator() const { return (_allocator); };
 			size_type			size() const { return (_size); };
@@ -458,6 +465,7 @@ namespace ft
 				__balanceTreeInsert(new_node);
 				_size++;
 				__linkEnd(_root);
+				_start = __findMinimum(_root);
 				return (ft::pair<iterator, bool>(iterator(new_node), true));
 			};
 
@@ -510,6 +518,7 @@ namespace ft
 					}
 				}
 				__linkEnd(_root);
+				_start = __findMinimum(_root);
 				_size--;
 			};
 

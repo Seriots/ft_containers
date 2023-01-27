@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/26 17:28:28 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/27 13:27:23 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include <iostream>
 
+#include "vector_iterator.hpp"
 #include "reverse_iterator.hpp"
 #include "lexicographical_compare.hpp"
 #include "equal.hpp"
@@ -37,8 +38,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef	typename Allocator::pointer				pointer;
 			typedef	typename Allocator::const_pointer		const_pointer;
-			typedef pointer									iterator;
-			typedef const_pointer							const_iterator;
+			typedef pointer			iterator;
+			typedef const_pointer	const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
