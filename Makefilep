@@ -1,0 +1,39 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/06/06 09:20:39 by mlazzare          #+#    #+#              #
+#    Updated: 2023/01/28 15:59:01 by lgiband          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+CNT-FT = containers-ft
+CNT-STL = containers-stl
+
+CXX = c++
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -g
+
+SRCS			=	srcs/giga_test.cpp											
+
+INC		=	-Iincludes/
+
+all: $(CNT-FT) $(CNT-STL)
+
+$(CNT-FT): $(SRCS)
+	$(CXX) $(CXXFLAGS) $(SRCS) $(INC) -o $@
+
+$(CNT-STL): $(SRCS)
+	$(CXX) $(CXXFLAGS) $(SRCS) $(INC) -D STL=1 -o $@
+
+clean: fclean
+
+fclean:
+	@rm -f $(CNT-FT)
+	@rm -f $(CNT-STL)
+
+re: fclean all
+
+.PHONY: re clean fclean all

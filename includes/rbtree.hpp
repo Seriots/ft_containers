@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 14:29:06 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 15:51:00 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -510,7 +510,7 @@ namespace ft
 					else if (_comp(tmp->getValue().first, val.first))
 						tmp = tmp->getRight();
 					else
-						return (ft::pair<iterator, bool>(iterator(), false)); // key already exists
+						return (ft::pair<iterator, bool>(iterator(tmp), false)); // key already exists
 				}
 				
 				new_node = _allocator.allocate(1);
@@ -531,10 +531,83 @@ namespace ft
 				return (ft::pair<iterator, bool>(iterator(new_node), true));
 			};
 
+			iterator	insert(iterator pos, const value_type& val)
+			{
+				(void)pos;
+				node<value_type>	*new_node;
+				node_type	*tmp = _root;
+				node_type	*parent = NULL;
 
-			void	remove(const Key &key)
+				while (tmp != NULL)
+				{
+					parent = tmp;
+					if (_comp(val.first, tmp->getValue().first))
+						tmp = tmp->getLeft();
+					else if (_comp(tmp->getValue().first, val.first))
+						tmp = tmp->getRight();
+					else
+						return (iterator(tmp)); // key already exists
+				}
+				
+				new_node = _allocator.allocate(1);
+				_allocator.construct(new_node, node_type(val));
+				new_node->setColor(color_red);
+				
+				if (_root == NULL)
+					_root = new_node;
+				else if (_comp(parent->getValue().first, val.first))
+					parent->setRight(new_node);
+				else
+					parent->setLeft(new_node);
+				new_node->setParent(parent);
+
+				__balanceTreeInsert(new_node);
+				_size++;
+				__linkEnd(_root);
+				return (iterator(new_node));
+			};
+
+
+			size_type	remove(const Key &key)
 			{
 				node_type	*node = find(key);
+				node_type	*movedUpNode;
+				node_type	*successor;
+				bool		deletedColor;
+
+				if (node == NULL || node == _end)
+					return (0);
+				
+				deletedColor = node->getColor();
+				if (node->getLeft() == NULL || node->getRight() == NULL)
+					movedUpNode = __removeWithZeroOrOneChild(node, deletedColor);
+				else
+				{
+					//reverse in-order successor 
+					successor = __findMaximum(node->getLeft()); // find the in-order successor __findMinimum(node->getRight());
+					__setNodeValue(node, successor->getValue());
+					deletedColor = successor->getColor();
+					movedUpNode = __removeWithZeroOrOneChild(successor, successor->getColor());
+				}
+
+				if (deletedColor == color_black)
+				{
+					__balanceTreeDelete(movedUpNode);
+					if (movedUpNode->getDelete() == 1)
+					{
+						__replaceParentsChild(movedUpNode->getParent(), movedUpNode, NULL);
+						_allocator.destroy(movedUpNode);
+						_allocator.deallocate(movedUpNode, 1);
+					}
+				}
+				__linkEnd(_root);
+				_size--;
+				return (1);
+			};
+
+			void	remove(iterator pos)
+			{
+				node_type	*node = find(pos->first);
 				node_type	*movedUpNode;
 				node_type	*successor;
 				bool		deletedColor;
@@ -566,6 +639,7 @@ namespace ft
 				}
 				__linkEnd(_root);
 				_size--;
+				return ;
 			};
 
 			node_type	*find(const Key &key) const

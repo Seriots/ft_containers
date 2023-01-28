@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 10:59:34 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 10:56:19 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 15:47:23 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,10 +119,16 @@ namespace ft
 			mapped_type&		operator[]( const key_type& key ) { return (_tree[key]); }
 
 			/*************************Modifiers********************************/
-			void	clear() { _tree.clear(); };
-			void	insert( const value_type& value ) { _tree.insert(value); };
-			void	erase( const key_type& key ) { _tree.remove(key); };
-			void	swap( map& other ) { _tree.swap(other._tree); _allocator = other.get_allocator(); _comp = other._comp; };
+			void						clear() { _tree.clear(); };
+			ft::pair<iterator, bool>	insert( const value_type& value ) { return (_tree.insert(value)); };	
+			iterator 					insert( iterator pos, const value_type& value ) { return (_tree.insert(pos, value)); }
+			
+			template< class InputIt >
+			void 						insert( InputIt first, InputIt last ) { while (first != last) { _tree.insert(*first); first++; } }
+			size_type					erase( const key_type& key ) { return (_tree.remove(key)); };
+			void						erase( iterator pos ) { _tree.remove(pos); };
+			void						erase( iterator first, iterator last ) { while (first != last) { _tree.remove(first); first++; } };
+			void						swap( map& other ) { _tree.swap(other._tree); _allocator = other.get_allocator(); _comp = other._comp; };
 			
 			/**************************Lookup**********************************/
 			size_type		count( const key_type& key ) const {return (_tree.count(key));};

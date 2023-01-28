@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 14:26:13 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 20:07:25 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "lexicographical_compare.hpp"
 #include "equal.hpp"
 #include "enable_if.hpp"
+#include "is_integral.hpp"
 
 namespace ft
 {
@@ -49,6 +50,20 @@ namespace ft
 			pointer		_data;
 			Allocator	_allocator;
 
+			size_type	__new_capacity(size_type n)
+			{
+				size_type tmp = _capacity;
+
+				while (tmp < n)
+				{
+					if (tmp == 0)
+						tmp = 1;
+					else
+						tmp *= 2;	
+				}
+				return (tmp);
+			};
+
 		public:
 			/***********************Constructor***********************/
 			vector() : _size(0), _capacity(0), _data(NULL), _allocator(Allocator())
@@ -65,7 +80,7 @@ namespace ft
 			};
 
 			template< class InputIt >
-			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator()) : _size(ft::iteratorDistance(first, last)), _capacity(ft::iteratorDistance(first, last)), _data(NULL), _allocator(alloc)
+			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) : _size(ft::distance(first, last)), _capacity(ft::distance(first, last)), _data(NULL), _allocator(alloc)
 			{
 				_data = _allocator.allocate(_capacity);
 				//std::memcpy(_data, first, _size * sizeof(T));
@@ -142,55 +157,50 @@ namespace ft
 			bool empty() const {return (_size == 0);};
 			size_type size() const {return (_size);};
 			size_type max_size() const {return (_allocator.max_size());};
-			void reserve( size_type new_cap )
+			void reserve( size_type n )
 			{
-				if (new_cap > this->max_size())
-					throw std::length_error("vector");
-				if (new_cap <= _capacity)
-					return ;
-				_capacity = new_cap;
-				pointer tmp = _allocator.allocate(_capacity);
-				//std::memcpy(tmp, _data, _size * sizeof(T));
+				pointer	tmp;
+
+				if (n <= _capacity)	return ;
+				if (n > max_size())
+					throw std::length_error("> max size");
+				tmp = _allocator.allocate(n);
 				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(tmp + i, _data[i]);
+				{
+					_allocator.construct(&tmp[i], _data[i]);
+					_allocator.destroy(&_data[i]);
+				}
+				if (_data)
+					_allocator.deallocate(_data, _capacity);
+				_data = tmp;
+				_capacity = n;
 			};
 			size_type capacity() const {return (_capacity);};
 
 
 			/***********************Modifier********************************/
 			template <class InputIterator>
-			void assign(InputIterator first, InputIterator last)
+			void		assign( InputIterator first, InputIterator last,
+							typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0 )
 			{
-				for (size_type i = 0; i < _size; i++)
-					_allocator.destroy(_data + i);
-				_size = ft::iteratorDistance(first, last);
-				if (_size > _capacity && _data != NULL)
-					_allocator.deallocate(_data, _capacity);
-				if (_size > _capacity)
-				{
-					_capacity = _size;
-					_data = _allocator.allocate(_capacity);
-				}
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, value_type(*(first++)));
-				//std::memcpy(_data, first, _size * sizeof(T));
+				size_type	n = ft::distance(first, last);
+
+				clear();
+				if (n > _capacity)
+					reserve(n);
+				for (size_type i = 0; i < n; i++)
+					_allocator.construct(_data + i, *first++);
+				_size = n;
 			};
 
 			void assign(size_type n, const value_type& val)
 			{
-				for (size_type i = 0; i < _size; i++)
-					_allocator.destroy(_data + i);
-
-				if (n > _capacity && _data != NULL)
-					_allocator.deallocate(_data, _capacity);
-				_size = n;
+				clear();
 				if (n > _capacity)
-				{
-					_capacity = n;
-					_data = _allocator.allocate(_capacity);
-				}
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, value_type(val));
+					reserve(n);
+				for (size_type i = 0; i < n; i++)
+					_allocator.construct(_data + i, val);
+				_size = n;
 			};
 
 			void push_back(const value_type& val)
@@ -198,15 +208,9 @@ namespace ft
 				if (_size == _capacity)
 				{
 					if (_capacity == 0)
-						_capacity = 1;
+						reserve(1);
 					else
-						_capacity *= 2;
-					pointer tmp = _allocator.allocate(_capacity);
-					for (size_type i = 0; i < _size; i++)
-						_allocator.construct(tmp + i, _data[i]);
-					if (_data)
-						_allocator.deallocate(_data, _capacity / 2);
-					_data = tmp;
+						reserve(_capacity * 2);
 				}
 				_allocator.construct(_data + _size, val);
 				_size++;
@@ -214,123 +218,56 @@ namespace ft
 
 			void pop_back()
 			{
-				//if (_size == 0) //std doesnt protect that
-				//	return ;
 				_allocator.destroy(_data + _size - 1);
 				_size--;
 			};
 
 			iterator insert(iterator position, const value_type& val)
 			{
-				size_type	pos;
+				size_type	tmp = ft::distance(begin(), position);
 
-				pos = position - _data;
-				
-				if (_size == _capacity)
-				{
-					if (_capacity == 0)
-						_capacity = 1;
-					else
-						_capacity *= 2;
-					pointer tmp = _allocator.allocate(_capacity);
-
-					//std::memcpy(tmp, _data, sizeof(value_type) * pos);
-					for (size_type i = 0; i < pos; i++)
-						_allocator.construct(tmp + i, _data[i]);
-					_allocator.construct(tmp + pos, val);
-					//std::memcpy(tmp + pos + 1, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = pos + 1; i < _size + 1; i++)
-						_allocator.construct(tmp + i, _data[i - 1]);
-					if (_data)
-						_allocator.deallocate(_data, _capacity / 2);
-					_data = tmp;
-				}
-				else
-				{
-					//std::memcpy(_data + pos + 1, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = _size; i > pos; i--)
-						_allocator.construct(_data + i, _data[i - 1]);
-					_allocator.construct(_data + pos, val);
-				}
-				_size++;
-				return (position);
+				insert(position, 1, val);
+				return (iterator(&_data[tmp]));
 			};
 	
 		    void insert(iterator position, size_type n, const value_type& val)
 			{
-				size_type	pos;
-				size_type	previous_capacity = _capacity;
+				size_type			i = ft::distance(begin(), position);
 
-				pos = position - _data;
-				
-				if (_size + n > _capacity)
+				if ((_size + n) > _capacity)
+					reserve(__new_capacity(_size + n));
+				// for (size_type j = n + _size - 1; j > i + n - 1; j--)
+				// {
+				// 	_allocator.construct(&_data[j], _data[j - n]);
+				// 	_allocator.destroy(&_data[j - n]);
+				// }
+				std::copy(_data + i, _data + _size, _data + i + n);
+				for (size_type k = i; k < i + n; k++)
 				{
-					_capacity = _size + n;
-					pointer tmp = _allocator.allocate(_capacity);
-
-					//std::memcpy(tmp, _data, sizeof(value_type) * pos);
-					for (size_type i = 0; i < pos; i++)
-						_allocator.construct(tmp + i, _data[i]);
-					for (size_type i = 0; i < n; i++)
-						_allocator.construct(tmp + pos + i, val);
-					//std::memcpy(tmp + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = pos + n; i < _size + n; i++)
-						_allocator.construct(tmp + i, _data[i - n]);
-
-					if (_data)
-						_allocator.deallocate(_data, previous_capacity);
-					_data = tmp;
+					_allocator.construct(&_data[k], val);
+					_size++;
 				}
-				else
-				{
-					//std::memcpy(_data + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = _size + n - 1; i >= pos + n; i--)
-						_allocator.construct(_data + i, _data[i - n]);
-					for (size_type i = 0; i < n; i++)
-						_allocator.construct(_data + pos + i, val);
-				}
-				_size += n;
 			};
 	
 			template <class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last)
+			void insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0 )
 			{
-				size_type	pos;
-				size_type	previous_capacity = _capacity;
+				size_type			i = ft::distance(begin(), position);
+				size_type			n = ft::distance(first, last);
 
-				pos = position - _data;
-				size_type n = ft::iteratorDistance(first, last);				
-				if (_size + n > _capacity)
+				if ((_size + n) > _capacity)
+					reserve(__new_capacity(_size + n));
+				// for (size_type j = n + _size - 1; j > i + n - 1; j--)
+				// {
+				// 	_allocator.construct(&_data[j], _data[j - n]);
+				// 	_allocator.destroy(&_data[j - n]);
+				// }
+				std::copy(_data + i, _data + _size, _data + i + n);
+				for (size_type k = i; k < i + n; k++)
 				{
-					if (_capacity == 0)
-						_capacity = n;
-					else if (_capacity < n)
-						_capacity = _size + n;
-					else
-						_capacity = _size + (n * ((size_type)((_capacity) / n) + 1));
-					pointer tmp = _allocator.allocate(_capacity);
-
-					//std::memcpy(tmp, _data, sizeof(value_type) * pos);
-					for (size_type i = 0; i < pos; i++)
-						_allocator.construct(tmp + i, _data[i]);
-					for (size_type i = 0; i < n; i++)
-						_allocator.construct(tmp + pos + i, *(first + i));
-					//std::memcpy(tmp + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = pos + n; i < _size + n; i++)
-						_allocator.construct(tmp + i, _data[i - n]);
-					if (_data)
-						_allocator.deallocate(_data, previous_capacity);
-					_data = tmp;
+					_allocator.construct(&_data[k], *first++);
+					_size++;
 				}
-				else
-				{
-					//std::memcpy(_data + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = _size + n - 1; i >= pos + n; i--)
-						_allocator.construct(_data + i, _data[i - n]);
-					for (size_type i = 0; i < n; i++)
-						_allocator.construct(_data + pos + i, *(first + i));
-				}
-				_size += n;
 			};
 			
 			iterator erase(iterator position)
@@ -339,25 +276,26 @@ namespace ft
 
 				pos = position - _data;
 				_allocator.destroy(_data + pos);
-				//std::memcpy(_data + pos, _data + pos + 1, sizeof(value_type) * (_size - pos - 1));
-				for (size_type i = pos; i < _size - 1; i++)
-					_allocator.construct(_data + i, _data[i + 1]);
+				// for (size_type i = pos; i < _size - 1; i++)
+				// 	_allocator.construct(_data + i, _data[i + 1]);
+				std::copy(_data + pos + 1, _data + _size, _data + pos);
 				_size--;
 				return (position);
 			};
 
 			iterator erase(iterator first, iterator last)
 			{
-				size_type	pos;
-				size_type	n;
+				size_type	pos = ft::distance(begin(), first);
+				size_type	n = ft::distance(first, last);
 
-				pos = first - _data;
-				n = ft::iteratorDistance(first, last);
 				for (size_type i = 0; i < n; i++)
 					_allocator.destroy(_data + pos + i);
-				//std::memcpy(_data + pos, _data + pos + n, sizeof(value_type) * (_size - pos - n));
-				for (size_type i = pos; i < _size - n; i++)
-					_allocator.construct(_data + i, _data[i + n]);
+				// for (size_type i = pos; i < _size - n; i++)
+				// {
+				// 	std::cerr << "capacity: " << _capacity << ", size: " << _size << ", pos: " << pos << ", n: " << n << ", i: " << i << std::endl;
+				//   	_allocator.construct(_data + i, _data[i + n]);
+				// }
+				std::copy(_data + pos + n, _data + _size, _data + pos);
 				_size -= n;
 				return (first);
 			};
@@ -378,27 +316,20 @@ namespace ft
 
 			void resize(size_type n, value_type val = value_type())
 			{
-				if (n > _capacity)
+				if (n > _size)
 				{
-					_capacity = n;
-					pointer tmp = _allocator.allocate(_capacity);
-					//std::memcpy(tmp, _data, sizeof(value_type) * _size);
-					for (size_type i = 0; i < _size; i++)
-						_allocator.construct(tmp + i, _data[i]);
+					if (n > _capacity)
+						reserve(__new_capacity(n));
 					for (size_type i = _size; i < n; i++)
-						_allocator.construct(tmp + i, val);
-					if (_data)
-						_allocator.deallocate(_data, _capacity);
-					_data = tmp;
+						_allocator.construct(_data + i, val);
 				}
 				else
 				{
-					for (size_type i = _size; i < n; i--)
+					for (size_type i = n; i < _size; i++)
 						_allocator.destroy(_data + i);
 				}
 				_size = n;
-			}
-
+			};
 	};
 
 	/******************Non-member functions************************/

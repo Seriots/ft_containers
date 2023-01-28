@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 13:26:59 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 20:08:33 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,27 @@ void	display_vector(ft::vector<int> &v, std::ofstream& out)
 	out << std::endl;
 }
 
+void	display_vector(ft::vector<std::string> &v, std::ofstream& out)
+{
+	out << v.size() << " " << v.capacity() << " " << v.empty() << " ";
+	for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++ )
+		out << *it << " ";
+	out << std::endl;
+}
+
+
 void	display_vector_content(ft::vector<int> &v, std::ofstream& out, std::string prompt)
 {
 	out << prompt << " ";
 	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++ )
+		out << *it << " ";
+	out << std::endl;
+}
+
+void	display_vector_content(ft::vector<std::string> &v, std::ofstream& out, std::string prompt)
+{
+	out << prompt << " ";
+	for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++ )
 		out << *it << " ";
 	out << std::endl;
 }
@@ -301,6 +318,18 @@ void	test_vector_assign(std::ofstream &out)
 	v4.assign((size_t)2, 21);
 	out << "<Set v4.assign(2, 21)>" << std::endl;
 	display_vector(v4, out);
+
+	ft::vector<std::string> v5;
+	ft::vector<std::string> v6;
+
+	v5.push_back("Hello");
+	v5.push_back("World");
+	v5.push_back("!");
+	out << "<Set v5={\"Hello\", \"World\", \"!\"}>" << std::endl;
+	display_vector(v5, out);
+	v6.assign(v5.begin(), v5.end());
+	out << "<Set v6=v5>" << std::endl;
+	display_vector(v6, out);
 }
 
 void	test_vector_pushback_ten(std::ofstream& out)
@@ -311,6 +340,8 @@ void	test_vector_pushback_ten(std::ofstream& out)
 
 	for (int i = 0; i < 10; i++)
 		v.push_back(i);
+	out << v.size() << " " << v.capacity() << " " << v.empty() << std::endl;
+	v.pop_back();
 	out << v.size() << " " << v.capacity() << " " << v.empty() << std::endl;
 
 }
@@ -401,17 +432,20 @@ void	test_vector_insert_fill(std::ofstream& out)
 		v.push_back(i);
 
 	v.insert(v.begin() + 3, (size_t)10, 42);
-	display_vector(v, out);
+	display_vector_content(v, out, "v = ");
 	v.push_back(42);
-	display_vector(v, out);
+	display_vector_content(v, out, "v = ");
 
 	v.insert(v.begin() + 8, (size_t)1000, 21);
-	display_vector(v, out);
+	display_vector_content(v, out, "v = ");
 }
 
 void	test_vector_insert_range(std::ofstream& out)
 {
 	out << "<Vector Insert Range>" << std::endl;
+
+	//10 elements
+	//std::string str[] = {"Hello", "World", "!", "I", "am", "a", "string", "vector", "!", "!"};
 
 	ft::vector<int> v;
 	ft::vector<int> v2;
@@ -420,16 +454,16 @@ void	test_vector_insert_range(std::ofstream& out)
 	for (int i = 0; i < 7; i++)
 		v2.push_back(i);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 		v.push_back(i);
 
 	out << "<Set v: >" << std::endl;
 	display_vector(v, out);
 	out << "<Set: v2 = v2[0:4]v[:]v2[4:]>" << std::endl;
 	v2.insert(v2.begin() + 3, v.begin(), v.end());
-	display_vector(v2, out);
+	display_vector_content(v2, out, "v2 = ");
 	v2.push_back(42);
-	display_vector(v2, out);
+	display_vector_content(v2, out, "v2 = ");
 
 	out << "<Set same x20000>" << std::endl;
 	for (int i = 0; i < 2000; i++)
@@ -442,6 +476,43 @@ void	test_vector_insert_range(std::ofstream& out)
 	v3.push_back(42);
 	display_vector_content(v3, out, "v3: ");
 }
+
+// void	test_vector_insert_range(std::ofstream& out)
+// {
+// 	out << "<Vector Insert Range>" << std::endl;
+
+// 	//10 elements
+// 	std::string str[] = {"Hello", "World", "!", "I", "am", "a", "string", "vector", "!", "!"};
+
+// 	ft::vector<std::string> v;
+// 	ft::vector<std::string> v2;
+// 	ft::vector<std::string> v3;
+
+// 	for (int i = 0; i < 7; i++)
+// 		v2.push_back(str[i]);
+
+// 	for (int i = 0; i < 10; i++)
+// 		v.push_back(str[i]);
+
+// 	out << "<Set v: >" << std::endl;
+// 	display_vector(v, out);
+// 	out << "<Set: v2 = v2[0:4]v[:]v2[4:]>" << std::endl;
+// 	v2.insert(v2.begin() + 3, v.begin(), v.end());
+// 	display_vector_content(v2, out, "v2 = ");
+// 	v2.push_back("42");
+// 	display_vector_content(v2, out, "v2 = ");
+
+// 	out << "<Set same x20000>" << std::endl;
+// 	for (int i = 0; i < 2000; i++)
+// 		v2.insert(v2.begin(), v.begin(), v.end());
+// 	display_vector_content(v2, out, "v2: ");
+
+// 	out << "<Set v3 empty and run v x20000>" << std::endl;
+// 	for (int i = 0; i < 2000; i++)
+// 		v3.insert(v3.begin(), v.begin(), v.end());
+// 	v3.push_back("42");
+// 	display_vector_content(v3, out, "v3: ");
+// }
 
 void	test_vector_insert_toomany(std::ofstream& out)
 {
@@ -475,6 +546,10 @@ void	test_vector_erase(std::ofstream &out)
 
 	for (int i = 0; i < 4000; i++)
 		v2.erase(v2.begin() + 2);
+	display_vector(v2, out);
+
+	//for (int i = 0; i < 20; i++)
+	v2.erase(v2.begin() + 5 , v2.begin() + 100);
 	display_vector(v2, out);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 13:59:06 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 14:06:34 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 16:22:59 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 namespace ft
 {
 	template <typename Iterator>
-	size_t iteratorDistance(Iterator first, Iterator last)
+	size_t distance(Iterator first, Iterator last)
 	{
 		size_t	size = 0;
 		
