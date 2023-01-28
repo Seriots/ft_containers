@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 09:47:52 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/24 12:07:12 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 11:31:55 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ namespace ft
 	class stack
 	{
 		public:
-				typedef T			value_type;
-				typedef Container	container_type;
-				typedef size_t		size_type;
+				typedef T									value_type;
+				typedef Container							container_type;
+				typedef size_t								size_type;
+				typedef typename Container::reference		reference;
+				typedef typename Container::const_reference	const_reference;	
 		
 		protected:
 				container_type		c;
@@ -31,6 +33,7 @@ namespace ft
 		public:
 				/*********************constructor*********************/
 				explicit	stack(const container_type& cont = container_type()) : c(cont) {};
+				stack( const stack& other ) { *this = other; };
 				~stack() {};
 
 				stack& operator=( const stack& other ) { c = other.c; return *this; };

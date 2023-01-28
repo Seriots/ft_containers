@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 17:00:06 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 13:13:17 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	main(void)
 	// 									&reverse_iterator_test,
 	// 									&test_equal, &test_lexicographical_compare, &test_pair, &test_vector};
 
-	void	(*fonc[])(std::ofstream&) = {&test_map};
+	void	(*fonc[])(std::ofstream&) = {&test_vector};
 
 	// &test_is_integral &test_enable_if need to use c++11
 

@@ -54,7 +54,8 @@
 		"numbers": "cpp",
 		"ranges": "cpp",
 		"span": "cpp",
-		"iomanip": "cpp"
+		"iomanip": "cpp",
+		"set": "cpp"
 	},
-	"C_Cpp.intelliSenseEngineFallback": "disabled"
+	"C_Cpp.intelliSenseEngineFallback": "enabled"
 }

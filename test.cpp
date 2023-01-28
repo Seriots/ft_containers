@@ -1,111 +1,115 @@
-#include <iostream>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/05/09 20:07:57 by mleblanc          #+#    #+#             */
+/*   Updated: 2023/01/28 13:53:44 by lgiband          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "vector.hpp"
 #include <string>
-#include <vector>
-#include <list>
-#include <fstream>
-#include <map>
-#include <typeinfo>
 
-#include "rbtree.hpp"
-#include "pair.hpp"
+std::string s_string[32] = {                                                                   \
+    "QExoqp0nICr0sXsHqty2", "naax9QcpJhvaL7DezsNQ", "25ZTtB6wbptfbxM8AvHB",                    \
+    "tShYNtc0MkdjqLrOatgz", "7Z3kf1Qec0NnsLSEpbOt", "WhkSNrKJC966fvjZ2Or1",                    \
+    "8vlxlFRRgW7yYj4GO7dt", "5sq1aoT8zP0HaHj3nFOK", "61Dv31GYZhkgjKCErpng",                    \
+    "l0IIcWWHhOcPzoxEamQM", "bE1RYclskwXlhCm46YFs", "kXeoi5qz94JYPqSDTs79",                    \
+    "TFsQP1dz8VVos9KzUpY0", "b3wYQR7An193gjgYuRj3", "xSmyNsnSJ47jLqrvbpyr",                    \
+    "guAIP2Wq43Gf8VhHsyu5", "yT6c2loPebHovnq9BQog", "3qvU1xcVm2g1DKFDlqh4",                    \
+    "L0q8RR9P41VD4sVjdnWl", "YdjESsIZM4b1oGQPjpBe", "l1ZVQbWKw7brHUSimJgq",                    \
+    "xdn0cf4vqRzpfXWtl10G", "lYnZvpqaV0s8DowMZwzV", "8P1cyKrwJNLoJyvLjYqO",                    \
+    "4MhOXNbAX23CEijO5cRT", "tHe3miAwCOVQbuoLaEP2", "l6uNLsc8fiLl3eWoG6j6",                    \
+    "477xt6l0lph9ALQdr4HX", "D9UJNe4s8YF02LhrwOdl", "dLCisBNOdE8yugntu6cj",                    \
+    "YvY4aQFHgAuagn4dFLO1", "eGR6Dtv7LW75qlV5Fkik"                                             \
+};                                                                                             \
+std::string b_string[64] = {                                                                   \
+    "uvg6KqtcgduR31n3ajsv", "wbiAcjgojb9JOagZwyMn", "ATZKCzaPOqgkhPjwuGlf",                    \
+    "MOhaJs56yjOw8f6nLPRA", "0gyB2Tr42v6awMw2nK7J", "e6GsiLFUuoDpVFEhJKZ1",                    \
+    "z0jXAhiV9keBsaLOY0Xf", "P68p2ZAosHJdmoZh1C7N", "Pu3EuZVeY0TCO3ojdK0t",                    \
+    "z7jCHMooHCS73M8GygKB", "uT4KoK83JrZxZjkul7ty", "g8gfrZoY5XwfzRusvHvv",                    \
+    "7PGmkM0OSRnYREt9mFIP", "q1od7mBIpPEsCtpF9kdw", "XQo0LWId5TdZnLnpUNOb",                    \
+    "U0m1R0kFFhAFyS6hmHHw", "K0lPKfxJxIOnE8QB90xn", "cZ5xyQifMJhrKxqBK9A7",                    \
+    "cFBiwjfYw7Js6qEGy5Kt", "1tW0KWfXxeFO69tByqcE", "3Fvq9NxBrhPXHe0IlIVx",                    \
+    "MSRDjdFRvHAhFGhiMtDe", "zGm2joMh71jQkYzg5L4V", "Mq4RRaeLvSAO0z2ibp8Q",                    \
+    "WnLFYnQKP8TNJkqVVbUg", "E98UphbbVSzrW5Mzurmg", "F8HRxeEcaTZDkFPkioij",                    \
+    "jmUVl4Q8X5BwVNzXN219", "n7Xp4w4FwzGKit7AI4SO", "4MxXYr6rKOcXLt9UkVd2",                    \
+    "4RVTDsADtRyboaai9d29", "XaSqsrrtdhAfFoJIc5KK", "9Z9jdVCrTT09bg348ceb",                    \
+    "I6uqLG9dO5mfNdSMwOYm", "UwMTzJPlbnhgwbHpDi6w", "DebjMP9afncYE6GhhO00",                    \
+    "YGPuscYDiGfAjY1UWST0", "K6gbvgGjVZgEFUDlkdSk", "8xCBPI0w6TpC0RA62c2W",                    \
+    "fYMxkNwmKg3moP8KvD9v", "QpPdhwhEYjIugg3OPcPH", "qQBXjSn43I3EMP54SyxZ",                    \
+    "7qvdKwoW1CQEZTWPvuSC", "rCT212rdYO0zTGHXesKg", "dBHvlHsBwcR9MkkenYYG",                    \
+    "NQiSlergqR8fVbOeivLj", "xYVqsV147UIe7jVBVwXo", "tcxayO4DdEJ885TbqUMy",                    \
+    "9TGSMTD8U8ksRpHqq0cL", "TIJ16jCv9BSUiWvhbF9T", "BM9GL2ig1hePkA6lM6Ck",                    \
+    "TfJTYB9JQMU6CGcYg20Q", "Fg6e5YT2FQbpTZNTDqdo", "LI5q6ml40MeE9H1dPb93",                    \
+    "OaxJUSm3nYN9Y8Ela7sS", "BgBeODAwXz7xJo50Rwqd", "xdkgKj1dEoJ6zuVhkvvo",                    \
+    "olIewtUEvXJgs1lB9bCn", "dTsPDS0x2uXtcgOIJHb8", "DYvJ2phLppGNZKboTBrd",                    \
+    "DjNFMtt9PxkzqvWBHI6j", "1Z3YkeTFlPniKnzFhzgu", "76XqQg6hqMf5IXxKPOEs",                    \
+    "gzaapTWW7i9EZjjzLeK6"                                                                     \
+};
 
 
-int	main(void)
+
+void stack_test_misc()
 {
+    {    
+        ft::vector<std::string> v;
+        v.assign(b_string, b_string + 64);
 
-	ft::rbTree<int, int> tree;
+        for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
 
-	for (int i = 0; i < 50 ; i++)
-	{
-	//	red ascii color
-		std::cout << "\033[1;34mInserting: " << i << "\033[0m" << std::endl;
-		tree.insert(ft::make_pair(i, i));
-	}
-	ft::rbTree<int, int> tree3(tree);
+        v.assign(65, "HelloWorld");
+        for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
+        v.assign(s_string, s_string + 32);
+        for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    {
+        double  b_double[64];
+        double  s_double[32];
 
-	std::cout << "tree == tree2: " << (tree == tree3) << std::endl;
-	std::cout << "tree != tree2: " << (tree != tree3) << std::endl;
-	// ft::rbTree<int, int> tree2(tree);
+        for (int i = 0; i < 64; i++)
+            b_double[i] = i;
+        
 
-	// for (int i = 20; i < 35 ; i++)
-	// {
-	// 	std::cout << "\033[1;34mErasing: " << i << "\033[0m" << std::endl;
-	// 	tree.remove(i);
-	// 	map.erase(i);
+        for (int i = 0; i < 32; i++)
+            s_double[i] = i;
+        
 
-	// }
-	
+        ft::vector<double> v;
+        v.assign(b_double, b_double + 64);
 
-	// std::cout << "\033[1;34mTree1: \033[0m" << std::endl;
-	// tree.display();
-	
-	// std::cout << "\033[1;34mTree2: \033[0m" << std::endl;
-	// tree2.display();
+        for (ft::vector<double>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
 
-	// tree2 = tree;
+        v.assign(65, 1.234567);
+        for (ft::vector<double>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
 
-	// std::cout << "\033[1;34mTree2: \033[0m" << std::endl;
-	// tree2.display();
+        v.assign(65, 8765.234567);
+        for (ft::vector<double>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
+        v.assign(s_double, s_double + 32);
+        for (ft::vector<double>::iterator it = v.begin(); it != v.end(); it++)
+            std::cout << *it << " ";
+        std::cout << std::endl;
+    }
+}
 
-	// tree2.remove(10);
-	// std::cout << "\033[1;34mTree1: \033[0m" << std::endl;
-	// tree.display();
-	
-	//std::cout << "\033[1;34mTree2: \033[0m" << std::endl;
-	//tree2.display();
-
-
-	std::cout << "\033[1;34mIterator ++ :\033[0m" << std::endl;
-	ft::rbTree<int, int>::iterator it = tree.begin() + 5;
-	it->second = 42;
-	std::cout << it->first << it->second << std::endl;
-
-	std::cout << "tree == tree3: " << (tree3 == tree) << std::endl;
-	std::cout << "tree != tree3: " << (tree3 != tree) << std::endl; 
-	// for (ft::rbTree<int, int>::const_iterator it = tree2.begin(); it != tree2.end(); it++)
-	// 	std::cout << it->first << std::endl;
-	// std::cout << std::endl;
-	// std::cout << "\033[1;34mIterator ++ :\033[0m" << std::endl;
-	// for (std::map<int, int>::const_iterator it = map.begin(); it != map.end(); it++)
-	// 	std::cout << it->first << std::endl;
-	// std::cout << std::endl;
-
-	//for (ft::rbTree<int, int>::iterator it = tree.begin(); it != tree.end(); it++)
-	//	std::cout << it->first << std::endl;
-	//std::cout << std::endl;
-
-
-
-	//std::cout << "\033[1;34mIterator -- :\033[0m" << std::endl;
-	//for (std::map<int, int>::iterator it = --(map.end()); it != map.begin(); it--)
-	//	std::cout << it->first << std::endl;
-	//std::cout << std::endl;
-
-	//for (ft::rbTree<int, int>::iterator it = --(tree.end()); it != tree.begin(); it--)
-	//	std::cout << it->first  << std::endl;
-	
-
-	//std::cout << "\033[1;34mReverse Iterator ++ :\033[0m" << std::endl;
-	//for (std::map<int, int>::reverse_iterator it = map.rbegin(); it != map.rend(); it++)
-	//	std::cout << it->first << std::endl;
-	//std::cout << std::endl;
-
-	//for (ft::rbTree<int, int>::reverse_iterator it = tree.rbegin(); it != tree.rend(); it++)
-	//	std::cout << it->first  << std::endl;
-	
-
-	//std::cout << "\033[1;34mReverse Iterator -- :\033[0m" << std::endl;
-	//for (std::map<int, int>::reverse_iterator it = --(map.rend()); it != map.rbegin(); it--)
-	//	std::cout << it->first << std::endl;
-	//std::cout << std::endl;
-
-	//for (ft::rbTree<int, int>::reverse_iterator it = --(tree.rend()); it != tree.rbegin(); it--)
-	//	std::cout << it->first  << std::endl;
-
-	//std::cout << (itest+2)->first << std::endl;
-	//itest2 = itest2 + 2;
-	
-	//std::cout << (itest[3]).first << std::endl;
-
-	//tree.display();
+int main()
+{
+	stack_test_misc();
+	return 0;
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector.hpp                                         :+:      :+:    :+:   */
+/*   vector_copy.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 14:26:13 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 13:31:00 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <iostream>
 
 #include "reverse_iterator.hpp"
-#include "iterator_distance.hpp"
 #include "lexicographical_compare.hpp"
 #include "equal.hpp"
 #include "enable_if.hpp"
@@ -38,8 +37,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef	typename Allocator::pointer				pointer;
 			typedef	typename Allocator::const_pointer		const_pointer;
-			typedef pointer			iterator;
-			typedef const_pointer	const_iterator;
+			typedef typename Allocator::pointer				iterator;
+			typedef typename Allocator::const_pointer		const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -65,12 +64,12 @@ namespace ft
 			};
 
 			template< class InputIt >
-			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator()) : _size(ft::iteratorDistance(first, last)), _capacity(ft::iteratorDistance(first, last)), _data(NULL), _allocator(alloc)
+			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator()) : _size(last - first), _capacity(last - first), _data(NULL), _allocator(alloc)
 			{
 				_data = _allocator.allocate(_capacity);
-				//std::memcpy(_data, first, _size * sizeof(T));
+				//std::memcpy(_data, &(*first), _size * sizeof(T));
 				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, value_type(*(first++)));
+					_allocator.construct(_data + i, *(first++));
 			};
 
 			vector( const vector& other ) : _size(other._size), _capacity(other._capacity), _data(NULL), _allocator(other._allocator)
@@ -83,24 +82,26 @@ namespace ft
 
 			~vector()
 			{
-				this->clear();
-				if (_data)
+				//this->clear();
+				if (_data != NULL)
 					_allocator.deallocate(_data, _capacity);
 			};
 
 			vector& operator=(const vector& rhs)
 			{
-				if (this == &rhs)
-					return (*this);
-				_allocator = rhs.get_allocator();
-				if (_data != NULL)
-					_allocator.deallocate(_data, _capacity);
-				_size = rhs.size();
-				_capacity = rhs.capacity();
-				_data = _allocator.allocate(_capacity);
-				//std::memcpy(_data, rhs._data, _size * sizeof(T));
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, rhs._data[i]);
+				if (*this != rhs)
+				{
+					if (_data != NULL)
+						_allocator.deallocate(_data, _capacity);
+					_capacity = rhs.capacity();
+					_allocator = rhs.get_allocator();
+					_size = rhs.size();
+					_data = _allocator.allocate(_capacity);
+					for (size_type i = 0; i < _size; i++)
+					{
+						_allocator.construct(_data + i, value_type(*(rhs.begin() + i)));
+					}
+				}
 				return (*this);
 			};
 
@@ -144,6 +145,8 @@ namespace ft
 			size_type max_size() const {return (_allocator.max_size());};
 			void reserve( size_type new_cap )
 			{
+				size_type	previous_cap = _capacity;
+
 				if (new_cap > this->max_size())
 					throw std::length_error("vector");
 				if (new_cap <= _capacity)
@@ -153,6 +156,9 @@ namespace ft
 				//std::memcpy(tmp, _data, _size * sizeof(T));
 				for (size_type i = 0; i < _size; i++)
 					_allocator.construct(tmp + i, _data[i]);
+				if (_data != NULL)
+					_allocator.deallocate(_data, previous_cap);
+				_data = tmp;
 			};
 			size_type capacity() const {return (_capacity);};
 
@@ -163,32 +169,32 @@ namespace ft
 			{
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(_data + i);
-				_size = ft::iteratorDistance(first, last);
-				if (_size > _capacity && _data != NULL)
+				if ((size_type)(last - first) > _capacity && _data != NULL)
 					_allocator.deallocate(_data, _capacity);
-				if (_size > _capacity)
+				_size = last - first;
+				if ((size_type)(last - first) > _capacity || _data == NULL)
 				{
-					_capacity = _size;
+					_capacity = last - first;
 					_data = _allocator.allocate(_capacity);
 				}
+				//std::memcpy(_data, first, sizeof(T) * _size);
 				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, value_type(*(first++)));
-				//std::memcpy(_data, first, _size * sizeof(T));
+				 	_allocator.construct(_data + i, value_type(*(first + i)));
 			};
 
 			void assign(size_type n, const value_type& val)
 			{
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(_data + i);
-
 				if (n > _capacity && _data != NULL)
 					_allocator.deallocate(_data, _capacity);
 				_size = n;
-				if (n > _capacity)
+				if (n > _capacity || _data == NULL)
 				{
 					_capacity = n;
 					_data = _allocator.allocate(_capacity);
 				}
+				//std::memset(_data, _size, value_type(val));
 				for (size_type i = 0; i < _size; i++)
 					_allocator.construct(_data + i, value_type(val));
 			};
@@ -202,13 +208,19 @@ namespace ft
 					else
 						_capacity *= 2;
 					pointer tmp = _allocator.allocate(_capacity);
+					std::cout << "1" << std::endl;
 					for (size_type i = 0; i < _size; i++)
-						_allocator.construct(tmp + i, _data[i]);
+					{
+						_allocator.construct(tmp + i, value_type(_data[i]));
+					}
+					// std::memcpy(tmp, _data, _size * sizeof(T));
 					if (_data)
 						_allocator.deallocate(_data, _capacity / 2);
 					_data = tmp;
 				}
+					std::cout << "2" << std::endl;
 				_allocator.construct(_data + _size, val);
+					std::cout << "3" << std::endl;
 				_size++;
 			};
 
@@ -216,7 +228,11 @@ namespace ft
 			{
 				//if (_size == 0) //std doesnt protect that
 				//	return ;
-				_allocator.destroy(_data + _size - 1);
+				//_data[_size - 1] = value_type();
+			//	std::cout << "data = " << _data << ", _size = " << _size << ", sizeof(T) = " << sizeof(T) << std::endl;
+			//	std::cout << "destroy: " << _data + (_size - 1) << " | " << (_size - 1) <<  std::endl;
+				
+				_allocator.destroy(_data + (_size - 1));
 				_size--;
 			};
 
@@ -234,22 +250,17 @@ namespace ft
 						_capacity *= 2;
 					pointer tmp = _allocator.allocate(_capacity);
 
-					//std::memcpy(tmp, _data, sizeof(value_type) * pos);
-					for (size_type i = 0; i < pos; i++)
-						_allocator.construct(tmp + i, _data[i]);
+					std::memcpy(tmp, _data, sizeof(value_type) * pos);
 					_allocator.construct(tmp + pos, val);
-					//std::memcpy(tmp + pos + 1, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = pos + 1; i < _size + 1; i++)
-						_allocator.construct(tmp + i, _data[i - 1]);
+					std::memcpy(tmp + pos + 1, _data + pos, sizeof(value_type) * (_size - pos));
+					
 					if (_data)
 						_allocator.deallocate(_data, _capacity / 2);
 					_data = tmp;
 				}
 				else
 				{
-					//std::memcpy(_data + pos + 1, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = _size; i > pos; i--)
-						_allocator.construct(_data + i, _data[i - 1]);
+					std::memcpy(_data + pos + 1, _data + pos, sizeof(value_type) * (_size - pos));
 					_allocator.construct(_data + pos, val);
 				}
 				_size++;
@@ -268,24 +279,18 @@ namespace ft
 					_capacity = _size + n;
 					pointer tmp = _allocator.allocate(_capacity);
 
-					//std::memcpy(tmp, _data, sizeof(value_type) * pos);
-					for (size_type i = 0; i < pos; i++)
-						_allocator.construct(tmp + i, _data[i]);
+					std::memcpy(tmp, _data, sizeof(value_type) * pos);
 					for (size_type i = 0; i < n; i++)
 						_allocator.construct(tmp + pos + i, val);
-					//std::memcpy(tmp + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = pos + n; i < _size + n; i++)
-						_allocator.construct(tmp + i, _data[i - n]);
-
+					std::memcpy(tmp + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
+					
 					if (_data)
 						_allocator.deallocate(_data, previous_capacity);
 					_data = tmp;
 				}
 				else
 				{
-					//std::memcpy(_data + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = _size + n - 1; i >= pos + n; i--)
-						_allocator.construct(_data + i, _data[i - n]);
+					std::memcpy(_data + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
 					for (size_type i = 0; i < n; i++)
 						_allocator.construct(_data + pos + i, val);
 				}
@@ -299,7 +304,7 @@ namespace ft
 				size_type	previous_capacity = _capacity;
 
 				pos = position - _data;
-				size_type n = ft::iteratorDistance(first, last);				
+				size_type n = last - first;				
 				if (_size + n > _capacity)
 				{
 					if (_capacity == 0)
@@ -310,23 +315,18 @@ namespace ft
 						_capacity = _size + (n * ((size_type)((_capacity) / n) + 1));
 					pointer tmp = _allocator.allocate(_capacity);
 
-					//std::memcpy(tmp, _data, sizeof(value_type) * pos);
-					for (size_type i = 0; i < pos; i++)
-						_allocator.construct(tmp + i, _data[i]);
+					std::memcpy(tmp, _data, sizeof(value_type) * pos);
 					for (size_type i = 0; i < n; i++)
 						_allocator.construct(tmp + pos + i, *(first + i));
-					//std::memcpy(tmp + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = pos + n; i < _size + n; i++)
-						_allocator.construct(tmp + i, _data[i - n]);
+					std::memcpy(tmp + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
+					
 					if (_data)
 						_allocator.deallocate(_data, previous_capacity);
 					_data = tmp;
 				}
 				else
 				{
-					//std::memcpy(_data + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
-					for (size_type i = _size + n - 1; i >= pos + n; i--)
-						_allocator.construct(_data + i, _data[i - n]);
+					std::memcpy(_data + pos + n, _data + pos, sizeof(value_type) * (_size - pos));
 					for (size_type i = 0; i < n; i++)
 						_allocator.construct(_data + pos + i, *(first + i));
 				}
@@ -339,9 +339,7 @@ namespace ft
 
 				pos = position - _data;
 				_allocator.destroy(_data + pos);
-				//std::memcpy(_data + pos, _data + pos + 1, sizeof(value_type) * (_size - pos - 1));
-				for (size_type i = pos; i < _size - 1; i++)
-					_allocator.construct(_data + i, _data[i + 1]);
+				std::memcpy(_data + pos, _data + pos + 1, sizeof(value_type) * (_size - pos - 1));
 				_size--;
 				return (position);
 			};
@@ -352,12 +350,10 @@ namespace ft
 				size_type	n;
 
 				pos = first - _data;
-				n = ft::iteratorDistance(first, last);
+				n = last - first;
 				for (size_type i = 0; i < n; i++)
-					_allocator.destroy(_data + pos + i);
-				//std::memcpy(_data + pos, _data + pos + n, sizeof(value_type) * (_size - pos - n));
-				for (size_type i = pos; i < _size - n; i++)
-					_allocator.construct(_data + i, _data[i + n]);
+					_allocator.destroy(_data + (pos + i));
+				std::memcpy(_data + pos, _data + pos + n, sizeof(value_type) * (_size - pos - n));
 				_size -= n;
 				return (first);
 			};
@@ -365,7 +361,7 @@ namespace ft
 			void clear()
 			{
 				for (size_type i = 0; i < _size; i++)
-					_allocator.destroy(_data + i);
+					_allocator.destroy(_data + (i));
 				_size = 0;
 			};
 
@@ -382,9 +378,7 @@ namespace ft
 				{
 					_capacity = n;
 					pointer tmp = _allocator.allocate(_capacity);
-					//std::memcpy(tmp, _data, sizeof(value_type) * _size);
-					for (size_type i = 0; i < _size; i++)
-						_allocator.construct(tmp + i, _data[i]);
+					std::memcpy(tmp, _data, sizeof(value_type) * _size);
 					for (size_type i = _size; i < n; i++)
 						_allocator.construct(tmp + i, val);
 					if (_data)

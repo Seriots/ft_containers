@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 17:58:41 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/28 14:29:06 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -459,7 +459,42 @@ namespace ft
 			allocator_type		get_allocator() const { return (_allocator); };
 			size_type			size() const { return (_size); };
 			bool				empty() const { return (_size == 0); };
+			size_type			max_size() const { return (_allocator.max_size()); };
 			node_type			*getRoot() const { return (_root); };
+			Compare				getComp() const { return (_comp); };
+			void				setRoot(node_type *root) { _root = root; };
+			void				setSize(size_type size) { _size = size; };
+			void				setComp(Compare comp) { _comp = comp; };
+			void				setAllocator(allocator_type allocator) { _allocator = allocator; };
+			
+			mapped_type&	at( const key_type& key)
+			{
+				node_type *tmp = find(key);
+				
+				if (tmp == NULL)
+					throw std::out_of_range("Key not found");
+				return (tmp->getValue().second);
+			};
+			
+			const mapped_type&	at( const key_type& key) const
+			{
+				node_type *tmp = find(key);
+				
+				if (tmp == NULL)
+					throw std::out_of_range("Key not found");
+				return (tmp->getValue().second);
+			};
+			
+			mapped_type&	operator[](const key_type& key)
+			{
+				node_type *tmp = find(key);
+				
+				if (tmp != NULL)
+					return (tmp->getValue().second);
+				
+				insert(ft::pair<key_type, mapped_type>(key, mapped_type()));
+				return (find(key)->getValue().second);
+			};
 			
 			ft::pair<iterator, bool>	insert(const value_type& val)
 			{
@@ -496,21 +531,6 @@ namespace ft
 				return (ft::pair<iterator, bool>(iterator(new_node), true));
 			};
 
-			node_type	*find(const Key &key) const
-			{
-				node_type *tmp = _root;
-
-				while (tmp != NULL)
-				{
-					if (_comp(key, tmp->getValue().first))
-						tmp = tmp->getLeft();
-					else if (_comp(tmp->getValue().first, key))
-						tmp = tmp->getRight();
-					else
-						return (tmp); // key already exists
-				}
-				return (NULL);
-			};
 
 			void	remove(const Key &key)
 			{
@@ -548,6 +568,22 @@ namespace ft
 				_size--;
 			};
 
+			node_type	*find(const Key &key) const
+			{
+				node_type *tmp = _root;
+
+				while (tmp != NULL)
+				{
+					if (_comp(key, tmp->getValue().first))
+						tmp = tmp->getLeft();
+					else if (_comp(tmp->getValue().first, key))
+						tmp = tmp->getRight();
+					else
+						return (tmp); // key already exists
+				}
+				return (NULL);
+			};
+			
 			void	clear()
 			{
 				__clearTree(_root);
@@ -555,11 +591,140 @@ namespace ft
 				_size = 0;
 			};
 
-			// void	display() const
-			// {
-			// 	if (_root != NULL)
-			// 		_root->display();
-			// };
+			void	swap(rbTree &other)
+			{
+				node_type	*tmp = _root;
+				size_type	tmp_size = _size;
+				allocator_type	tmp_alloc = _allocator;
+				key_compare	tmp_comp = _comp;
+
+				_root = other.getRoot();
+				_size = other.size();
+				_allocator = other.get_allocator();
+				_comp = other.getComp();
+
+				other.setRoot(tmp);
+				other.setSize(tmp_size);
+				other.setAllocator(tmp_alloc);
+				other.setComp(tmp_comp);
+			};
+
+			bool	count(const key_type &key) const 
+			{
+				if (find(key) != NULL)
+					return (true);
+				return (false);
+			};
+
+			iterator	lower_bound (const key_type& key)
+			{
+				node_type	*tmp = _root;
+				node_type	*lower = NULL;
+
+				while (tmp != NULL)
+				{
+					if (_comp(key, tmp->getValue().first))
+					{
+						lower = tmp;
+						tmp = tmp->getLeft();
+					}
+					else if (_comp(tmp->getValue().first, key))
+						tmp = tmp->getRight();
+					else
+						return (iterator(tmp));
+				}
+				if (lower == NULL)
+					return (iterator(_end));
+				return (iterator(lower));
+			};
+
+			const_iterator	lower_bound (const key_type& key) const
+			{
+				node_type	*tmp = _root;
+				node_type	*lower = NULL;
+
+				while (tmp != NULL)
+				{
+					if (_comp(key, tmp->getValue().first))
+					{
+						lower = tmp;
+						tmp = tmp->getLeft();
+					}
+					else if (_comp(tmp->getValue().first, key))
+						tmp = tmp->getRight();
+					else
+						return (const_iterator(tmp));
+				}
+				if (lower == NULL)
+					return (const_iterator(_end));
+				return (const_iterator(lower));
+			};
+
+			iterator	upper_bound (const key_type& key)
+			{
+				node_type	*tmp = _root;
+				node_type	*upper = NULL;
+
+				while (tmp != NULL)
+				{
+					if (_comp(key, tmp->getValue().first))
+						tmp = tmp->getLeft();
+					else if (_comp(tmp->getValue().first, key))
+					{
+						upper = tmp;
+						tmp = tmp->getRight();
+					}
+					else
+					{
+						if (tmp->getRight() != NULL)
+							return (iterator(__findMinimum(tmp->getRight())));
+						return (iterator(tmp));
+					}
+				}
+				if (upper == NULL)
+					return (iterator(_end));
+				return (iterator(upper));
+			};
+
+			const_iterator	upper_bound (const key_type& key) const
+			{
+				node_type	*tmp = _root;
+				node_type	*upper = NULL;
+
+				while (tmp != NULL)
+				{
+					if (_comp(key, tmp->getValue().first))
+						tmp = tmp->getLeft();
+					else if (_comp(tmp->getValue().first, key))
+					{
+						upper = tmp;
+						tmp = tmp->getRight();
+					}
+					else
+					{
+						if (tmp->getRight() != NULL)
+							return (const_iterator(__findMinimum(tmp->getRight())));
+						return (const_iterator(tmp));
+					}
+				}
+				if (upper == NULL)
+					return (const_iterator(_end));
+				return (const_iterator(upper));
+			};
+
+			ft::pair<iterator, iterator>	equal_range (const key_type& key)
+			{
+				iterator	lower = lower_bound(key);
+				iterator	upper = upper_bound(key);
+				return (ft::pair<iterator, iterator>(lower, upper));
+			};
+
+			ft::pair<const_iterator, const_iterator>	equal_range (const key_type& key) const
+			{
+				const_iterator	lower = lower_bound(key);
+				const_iterator	upper = upper_bound(key);
+				return (ft::pair<const_iterator, const_iterator>(lower, upper));
+			};
 
 			bool	operator==(rbTree const &other) const
 			{
@@ -570,4 +735,9 @@ namespace ft
 
 			bool	operator!=(rbTree const &other) const { return (!(*this == other)); };
 	};
+			// void	display() const
+			// {
+			// 	if (_root != NULL)
+			// 		_root->display();
+			// };
 }
