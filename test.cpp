@@ -109,43 +109,32 @@
 
 int main()
 {
-    // This test checks if vector works with iterators tagged as std::input_iterator_tag
-    ft::vector<std::string> v;
+        ft::vector<std::string> v;
+        ft::vector<std::string> v2;
 
-    ft::vector<std::string>::iterator it = v.insert(v.end(), "ono");
+        v.push_back("one");
+        v.push_back("two");
+        v.push_back("three");
+        v.push_back("four");
 
-    //std::cout << *it << std::endl;
-    for (ft::vector<std::string>::iterator ite = v.begin(); ite != v.end(); ++ite)
-        std::cout << *ite << ' ';
-    std::cout << std::endl;
+        v2.push_back("five");
+        v2.push_back("six");
+        v2.push_back("seven");
+        v2.push_back("eight");
 
-    it = v.insert(v.end(), "allo");
+        for (ft::vector<std::string>::iterator cit = v.begin(); cit != v.end(); ++cit) {
+            std::cout << *cit << std::endl;
+        }
+        for (ft::vector<std::string>::iterator cit = v2.begin(); cit != v2.end(); ++cit) {
+            std::cout << *cit << std::endl;
+        }
 
-    std::cout << *it << std::endl;
-    for (ft::vector<std::string>::iterator ite = v.begin(); ite != v.end(); ++ite)
-        std::cout << *ite << ' ';
-    std::cout << std::endl;
+        v.swap(v2);
 
-    it = v.insert(v.begin(), "bateau");
-
-    
-    std::cout << *it << std::endl;
-    for (ft::vector<std::string>::iterator ite = v.begin(); ite != v.end(); ++ite)
-        std::cout << *ite << ' ';
-    std::cout << std::endl;
-
-    it = v.insert(v.begin() + 1, "corps");
-
-    std::cout << *it << std::endl;
-    for (ft::vector<std::string>::iterator ite = v.begin(); ite != v.end(); ++ite)
-        std::cout << *ite << ' ';
-    std::cout << std::endl;
-
-    v.insert(v.begin() + 2, 5, "damien");
-
-    //std::cout << *it << std::endl;
-    for (ft::vector<std::string>::iterator ite = v.begin(); ite != v.end(); ++ite)
-        std::cout << *ite << ' ';
-    std::cout << std::endl;
+        for (ft::vector<std::string>::iterator cit = v.begin(); cit != v.end(); ++cit) {
+            std::cout << *cit << std::endl;
+        }
+        for (ft::vector<std::string>::iterator cit = v2.begin(); cit != v2.end(); ++cit) {
+            std::cout << *cit << std::endl;
+        }
 }
-

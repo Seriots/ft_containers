@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/29 18:26:26 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 13:40:05 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef	typename Allocator::pointer				pointer;
 			typedef	typename Allocator::const_pointer		const_pointer;
-			//typedef typename ft::vectorIterator<value_type>	iterator;
-			//typedef typename ft::vectorIterator<value_type, true>	const_iterator;
-			typedef pointer			iterator;
-			typedef const_pointer	const_iterator;
+			typedef typename ft::vectorIterator<value_type>			iterator;
+			typedef typename ft::vectorIterator<const value_type>	const_iterator;
+			//typedef pointer			iterator;
+			//typedef const_pointer	const_iterator;
 			typedef ft::reverse_iterator<iterator>			reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -141,33 +141,37 @@ namespace ft
 			explicit vector( const Allocator& alloc ) : _size(0), _capacity(0), _data(NULL), _allocator(alloc)
 			{};
 
-			explicit vector( size_type count, const T& value = T(), const Allocator& alloc = Allocator()) : _size(count), _capacity(count), _data(NULL), _allocator(alloc)
+			explicit vector( size_type count, const T& value = T(), const Allocator& alloc = Allocator()) : _size(0), _capacity(0), _data(NULL), _allocator(alloc)
 			{
-				_data = _allocator.allocate(_capacity);
-				for (size_type i = 0; i < _size; i++)
+				if (count == 0)
+					return ;
+				reserve(count);
+				for (size_type i = 0; i < _capacity; i++)
 					_allocator.construct(_data + i, value);
+				_size = _capacity;
 			};
 
 			template< class InputIt >
-			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) : _size(ft::distance(first, last)), _capacity(ft::distance(first, last)), _data(NULL), _allocator(alloc)
+			vector( InputIt first, InputIt last, const Allocator& alloc = Allocator(), typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 ) : _size(0), _capacity(0), _data(NULL), _allocator(alloc)
 			{
-				_data = _allocator.allocate(_capacity);
-				//std::memcpy(_data, first, _size * sizeof(T));
-				for (size_type i = 0; i < _size; i++)
-					_allocator.construct(_data + i, value_type(*(first++)));
+				typedef typename ft::iterator_traits<InputIt>::iterator_category category;
+
+				__rangeAssign(first, last, category());
 			};
 
-			vector( const vector& other ) : _size(other._size), _capacity(other._capacity), _data(NULL), _allocator(other._allocator)
+			vector( const vector& other ) : _size(0), _capacity(0), _data(NULL), _allocator(other.get_allocator())
 			{
-				_data = _allocator.allocate(_size);
-				//std::memcpy(_data, other._data, _size * sizeof(T));
-				for (size_type i = 0; i < _size; i++)
+				if (other.capacity() == 0)
+					return ;
+				reserve(other.capacity());
+				for (size_type i = 0; i < other.size(); i++)
 					_allocator.construct(_data + i, other._data[i]);
+				_size = other.size();
 			};
 
 			~vector()
 			{
-				this->clear();
+				clear();
 				if (_data)
 					_allocator.deallocate(_data, _capacity);
 			};
@@ -271,10 +275,7 @@ namespace ft
 			{
 				if (_size == _capacity)
 				{
-					if (_capacity == 0)
-						reserve(1);
-					else
-						reserve(_capacity * 2);
+					reserve(__new_capacity(_capacity + 1));
 				}
 				_allocator.construct(_data + _size, val);
 				_size++;
@@ -360,9 +361,21 @@ namespace ft
 
 			void swap(vector& other)
 			{
-				vector	tmp(other);
-				other = *this;
-				*this = tmp;
+				pointer	tmp_ptr = _data;
+				size_type	tmp_size = _size;
+				size_type	tmp_capacity = _capacity;
+				allocator_type	tmp_allocator = _allocator;
+				
+
+				_data = other._data;
+				_size = other._size;
+				_capacity = other._capacity;
+				_allocator = other._allocator;
+				other._data = tmp_ptr;
+				other._size = tmp_size;
+				other._capacity = tmp_capacity;
+				other._allocator = tmp_allocator;
+				
 			}
 
 			void resize(size_type n, value_type val = value_type())
@@ -425,8 +438,6 @@ namespace ft
 	template <class T, class Alloc>
 	void swap (ft::vector<T,Alloc>& x, ft::vector<T,Alloc>& y)
 	{
-		ft::vector<T, Alloc> tmp(x);
-		x = y;
-		y = tmp;
+		x.swap(y);
 	};
 }

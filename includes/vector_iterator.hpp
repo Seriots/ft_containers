@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 13:25:50 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/29 13:27:51 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 15:19:14 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,78 +14,77 @@
 
 #include <memory>
 
-#include "select_const_type.hpp"
-
 namespace ft
 {
-	template <class V, bool isConst = false>
+	template <typename V>
 	class vectorIterator
 	{
-			typedef V							value_type;
-			typedef std::ptrdiff_t				difference_type;
+		public:
+			typedef V								value_type;
+			typedef std::ptrdiff_t					difference_type;
 			typedef std::bidirectional_iterator_tag	iterator_category;
-			typedef typename ft::select_const_type<isConst, value_type*, const value_type*>::type	pointer;
-			typedef typename ft::select_const_type<isConst, value_type&, const value_type&>::type	reference;
-
+			typedef V* 								pointer;
+			typedef V& 								reference;
 		private:
 			pointer		_ptr;
 			
 		public:
-			vectorIterator() : _ptr(NULL) {}
-			vectorIterator(pointer ptr) : _ptr(ptr) {}
-			vectorIterator(const vectorIterator &rhs) : _ptr(rhs._ptr) {}
-			~vectorIterator() {}
+			vectorIterator( const vectorIterator<V> &other ): _ptr(other.base()) { return; }
+			vectorIterator( pointer ptr = 0 ) : _ptr(ptr) { return; }
+			~vectorIterator( void ) { return; }
 
-			vectorIterator	&operator=(const vectorIterator &rhs)
+			vectorIterator &operator=( const vectorIterator &other )
 			{
-				_ptr = rhs._ptr;
-				return (*this);
+				if (this != &other)
+					this->_ptr = other.base();
+				return *this;
 			}
 
-			reference	operator*() const
-			{
-				return (*_ptr);
-			}
+			pointer	base( void ) const { return (this->_ptr); }
 
-			pointer		operator->() const
-			{
-				return (_ptr);
-			}
+			reference	operator*() const { return (*_ptr); }
+			pointer		operator->() const { return (_ptr); }
+			reference	operator[](difference_type n) { return (*(*this + n)); };
 
-			vectorIterator	&operator++()
-			{
-				++_ptr;
-				return (*this);
-			}
+			vectorIterator	&operator++() { ++_ptr; return (*this); }
+			vectorIterator	operator++(int) { vectorIterator	tmp(*this); ++_ptr; return (tmp); }
+			vectorIterator	&operator--() { --_ptr; return (*this); }
+			vectorIterator	operator--(int) { vectorIterator	tmp(*this); --_ptr; return (tmp); }
+			vectorIterator	operator+(difference_type n) const { return (vectorIterator(_ptr + n)); }
+			vectorIterator	operator-(difference_type n) const { return (vectorIterator(_ptr - n));}
+			vectorIterator	&operator+=(difference_type n) { _ptr += n; return (*this); }
+			vectorIterator	&operator-=(difference_type n) {_ptr -= n; return (*this); }
 
-			vectorIterator	operator++(int)
-			{
-				vectorIterator	tmp(*this);
-				++_ptr;
-				return (tmp);
-			}
+			operator vectorIterator<const value_type>() { return (vectorIterator<const value_type>(_ptr));}
 
-			vectorIterator	&operator--()
-			{
-				--_ptr;
-				return (*this);
-			}
+			friend vectorIterator	operator+(difference_type n, const vectorIterator &rhs) { return (vectorIterator(rhs.base() + n)); }
+			friend vectorIterator	operator-(difference_type n, const vectorIterator &rhs) { return (vectorIterator(rhs.base() - n)); }
+			friend difference_type	operator- (const vectorIterator &lhs, const vectorIterator &rhs) { return (lhs._ptr - rhs._ptr); }
 
-			vectorIterator	operator--(int)
-			{
-				vectorIterator	tmp(*this);
-				--_ptr;
-				return (tmp);
-			}
-
-			bool	operator==(const vectorIterator &rhs) const
-			{
-				return (_ptr == rhs._ptr);
-			}
-
-			bool	operator!=(const vectorIterator &rhs) const
-			{
-				return (_ptr != rhs._ptr);
-			}
+			bool	operator==( const vectorIterator<const value_type>& rhs ) const { return _ptr == rhs.base(); }	
+			bool	operator!=( const vectorIterator<const value_type>& rhs ) const { return _ptr != rhs.base(); }
+			bool	operator<( const vectorIterator<const value_type>& rhs ) const { return _ptr < rhs.base(); }
+			bool	operator<=( const vectorIterator<const value_type>& rhs ) const { return _ptr <= rhs.base(); }
+			bool	operator>( const vectorIterator<const value_type>& rhs ) const { return _ptr > rhs.base(); }
+			bool	operator>=( const vectorIterator<const value_type>& rhs ) const { return _ptr >= rhs.base(); }
 	};
+
+	template <class It1, class It2>
+	bool operator==( const vectorIterator<It1>& lhs, const vectorIterator<It2>& rhs ) { return (lhs.base() == rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator!=( const vectorIterator<It1>& lhs, const vectorIterator<It2>& rhs ) { return (lhs.base() != rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator<( const vectorIterator<It1>& lhs, const vectorIterator<It2>& rhs ) { return (lhs.base() < rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator<=( const vectorIterator<It1>& lhs, const vectorIterator<It2>& rhs ) { return (lhs.base() <= rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator>( const vectorIterator<It1>& lhs, const vectorIterator<It2>& rhs ) { return (lhs.base() > rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator>=( const vectorIterator<It1>& lhs, const vectorIterator<It2>& rhs ) { return (lhs.base() >= rhs.base()); };
+	
 };

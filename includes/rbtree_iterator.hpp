@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 19:51:11 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 13:41:15 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 15:29:46 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,19 @@
 #include <memory>
 
 #include "rbtree_node.hpp"
-#include "select_const_type.hpp"
 
 namespace ft
 {
-	template <class V, bool isConst = false>
+	template <class V>
 	class rbTreeIterator
 	{
 		public:
-			typedef V							value_type;
-			typedef ft::node<value_type>		node_type;
-			typedef std::ptrdiff_t				difference_type;
+			typedef V								value_type;
+			typedef ft::node<value_type>			node_type;
+			typedef std::ptrdiff_t					difference_type;
 			typedef std::bidirectional_iterator_tag	iterator_category;
-			typedef typename ft::select_const_type<isConst, value_type*, const value_type*>::type	pointer;
-			typedef typename ft::select_const_type<isConst, value_type&, const value_type&>::type	reference;
+			typedef value_type*						pointer;
+			typedef value_type&						reference;
 
 		private:
 			node_type	*_node;
@@ -96,20 +95,23 @@ namespace ft
 			};
 
 		public:
-			rbTreeIterator(): _node(NULL) {};
-			rbTreeIterator(node_type *node): _node(node) {};
+			rbTreeIterator(node_type *node = 0): _node(node) {};
 			rbTreeIterator(const rbTreeIterator &rhs): _node(rhs._node) {};
 			
-			~rbTreeIterator() {};
+			~rbTreeIterator(void) {};
 	
-			rbTreeIterator &operator=(const rbTreeIterator &rhs) { _node = rhs._node; return (*this); };
-			
-			bool operator==(const rbTreeIterator &rhs) const { return (_node == rhs._node); };
-			bool operator!=(const rbTreeIterator &rhs) const { return (_node != rhs._node); };
-			
+			rbTreeIterator &operator=(const rbTreeIterator &other)
+			{
+				if (this != &other)
+					_node = other.base();
+				return (*this);
+			};
+
+			pointer		base() const { return (_node); };			
+
 			reference	operator*() const { return (_node->getValue()); };
 			pointer		operator->() const { return (&_node->getValue()); };
-			reference operator[](difference_type n) { return (*(*this + n)); };
+			reference	operator[](difference_type n) { return (*(*this + n)); };
 
 			rbTreeIterator &operator++()
 			{
@@ -170,5 +172,38 @@ namespace ft
 					tmp._node = __getPredecessor(tmp._node);
 				return (tmp);
 			};
+
+			operator rbTreeIterator<const value_type>() { return (rbTreeIterator<const value_type>(this->base()));}
+
+			friend rbTreeIterator	operator+(difference_type n, const rbTreeIterator &rhs) { return (rbTreeIterator(rhs.base() + n)); }
+			friend rbTreeIterator	operator-(difference_type n, const rbTreeIterator &rhs) { return (rbTreeIterator(rhs.base() - n)); }
+			friend difference_type	operator-(const rbTreeIterator &lhs, const rbTreeIterator &rhs) { return (lhs.base() - rhs.base()); }
+
+			
+			bool	operator==( const rbTreeIterator<const value_type>& rhs ) const { return this->base() == rhs.base(); }	
+			bool	operator!=( const rbTreeIterator<const value_type>& rhs ) const { return this->base() != rhs.base(); }
+			bool	operator<( const rbTreeIterator<const value_type>& rhs ) const { return this->base() < rhs.base(); }
+			bool	operator<=( const rbTreeIterator<const value_type>& rhs ) const { return this->base() <= rhs.base(); }
+			bool	operator>( const rbTreeIterator<const value_type>& rhs ) const { return this->base() > rhs.base(); }
+			bool	operator>=( const rbTreeIterator<const value_type>& rhs ) const { return this->base() >= rhs.base(); }
 	};
+
+	template <class It1, class It2>
+	bool operator==( const rbTreeIterator<It1>& lhs, const rbTreeIterator<It2>& rhs ) { return (lhs.base() == rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator!=( const rbTreeIterator<It1>& lhs, const rbTreeIterator<It2>& rhs ) { return (lhs.base() != rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator<( const rbTreeIterator<It1>& lhs, const rbTreeIterator<It2>& rhs ) { return (lhs.base() < rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator<=( const rbTreeIterator<It1>& lhs, const rbTreeIterator<It2>& rhs ) { return (lhs.base() <= rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator>( const rbTreeIterator<It1>& lhs, const rbTreeIterator<It2>& rhs ) { return (lhs.base() > rhs.base()); };
+
+	template <class It1, class It2>
+	bool operator>=( const rbTreeIterator<It1>& lhs, const rbTreeIterator<It2>& rhs ) { return (lhs.base() >= rhs.base()); };
+
 }
