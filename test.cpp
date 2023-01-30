@@ -88,7 +88,7 @@
 #include <string>
 #include <sstream>
 
-#include "vector.hpp"
+#include "map.hpp"
 
 
 // template <class InputIterator>
@@ -109,32 +109,18 @@
 
 int main()
 {
-        ft::vector<std::string> v;
-        ft::vector<std::string> v2;
+    ft::map<int, std::string> mymap;
 
-        v.push_back("one");
-        v.push_back("two");
-        v.push_back("three");
-        v.push_back("four");
+    mymap.insert(ft::make_pair(1, "one"));
+    mymap.insert(ft::make_pair(2, "two"));
+    mymap.insert(ft::make_pair(3, "three"));
 
-        v2.push_back("five");
-        v2.push_back("six");
-        v2.push_back("seven");
-        v2.push_back("eight");
+    ft::map<int, std::string>::iterator it = mymap.begin();
+    ft::map<int, std::string>::const_iterator cit = mymap.begin();
 
-        for (ft::vector<std::string>::iterator cit = v.begin(); cit != v.end(); ++cit) {
-            std::cout << *cit << std::endl;
-        }
-        for (ft::vector<std::string>::iterator cit = v2.begin(); cit != v2.end(); ++cit) {
-            std::cout << *cit << std::endl;
-        }
+    for (; it != mymap.end(); it++)
+        std::cout << it->first << " => " << it->second << std::endl;
 
-        v.swap(v2);
-
-        for (ft::vector<std::string>::iterator cit = v.begin(); cit != v.end(); ++cit) {
-            std::cout << *cit << std::endl;
-        }
-        for (ft::vector<std::string>::iterator cit = v2.begin(); cit != v2.end(); ++cit) {
-            std::cout << *cit << std::endl;
-        }
+    for (; cit != mymap.end(); cit++)
+        std::cout << cit->first << " => " << cit->second << std::endl;
 }

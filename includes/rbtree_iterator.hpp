@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 19:51:11 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 15:29:46 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 18:16:23 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ namespace ft
 			};
 
 		public:
-			rbTreeIterator(node_type *node = 0): _node(node) {};
+			rbTreeIterator(void): _node(NULL) {};
+			rbTreeIterator(node_type *node): _node(node) {};
 			rbTreeIterator(const rbTreeIterator &rhs): _node(rhs._node) {};
 			
 			~rbTreeIterator(void) {};
@@ -107,71 +108,20 @@ namespace ft
 				return (*this);
 			};
 
-			pointer		base() const { return (_node); };			
+			node_type	*base() const { return (_node); };			
 
 			reference	operator*() const { return (_node->getValue()); };
 			pointer		operator->() const { return (&_node->getValue()); };
 			reference	operator[](difference_type n) { return (*(*this + n)); };
 
-			rbTreeIterator &operator++()
-			{
-				_node = __getSuccessor(_node);
-				return (*this);
-			};
-
-			rbTreeIterator operator++(int)
-			{
-				rbTreeIterator	tmp(*this);
-
-				_node = __getSuccessor(_node);
-				return (tmp);
-			};
-
-			rbTreeIterator &operator+=(int n)
-			{
-				while (n-- && _node != NULL)
-					_node = __getSuccessor(_node);
-				return (*this);
-			};
-
-			rbTreeIterator operator+(int n)
-			{
-				rbTreeIterator	tmp(*this);
-
-				while (n-- && tmp._node != NULL)
-					tmp._node = __getSuccessor(tmp._node);
-				return (tmp);
-			};
-
-			rbTreeIterator &operator--()
-			{
-				_node = __getPredecessor(_node);
-				return (*this);
-			};
-
-			rbTreeIterator operator--(int)
-			{
-				rbTreeIterator	tmp(*this);
-
-				_node = __getPredecessor(_node);
-				return (tmp);
-			};
-
-			rbTreeIterator &operator-=(int n)
-			{
-				while (n-- && _node != NULL)
-					_node = __getPredecessor(_node);
-				return (*this);
-			};
-
-			rbTreeIterator operator-(int n)
-			{
-				rbTreeIterator	tmp(*this);
-
-				while (n-- && tmp._node != NULL)
-					tmp._node = __getPredecessor(tmp._node);
-				return (tmp);
-			};
+			rbTreeIterator &operator++() { _node = __getSuccessor(_node); return (*this); };
+			rbTreeIterator operator++(int) { rbTreeIterator	tmp(*this); _node = __getSuccessor(_node); return (tmp); };
+			rbTreeIterator &operator+=(int n) { while (n-- && _node != NULL) _node = __getSuccessor(_node); return (*this); };
+			rbTreeIterator operator+(int n) { rbTreeIterator	tmp(*this); while (n-- && tmp._node != NULL) tmp._node = __getSuccessor(tmp._node); return (tmp); };
+			rbTreeIterator &operator--() { _node = __getPredecessor(_node); return (*this); };
+			rbTreeIterator operator--(int) { rbTreeIterator	tmp(*this); _node = __getPredecessor(_node); return (tmp); };
+			rbTreeIterator &operator-=(int n) { while (n-- && _node != NULL) _node = __getPredecessor(_node); return (*this); };
+			rbTreeIterator operator-(int n) { rbTreeIterator	tmp(*this); while (n-- && tmp._node != NULL) tmp._node = __getPredecessor(tmp._node); return (tmp); };
 
 			operator rbTreeIterator<const value_type>() { return (rbTreeIterator<const value_type>(this->base()));}
 

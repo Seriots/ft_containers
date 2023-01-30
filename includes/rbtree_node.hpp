@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/25 21:11:56 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/27 16:50:28 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 17:27:29 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,17 @@ namespace ft
 		public:
 			node() : value(), parent(NULL), left(NULL), right(NULL), color(color_black), is_delete(0) { };
 			node(const value_type& val) : value(val),  parent(NULL), left(NULL), right(NULL), color(color_black), is_delete(0) {};
+
+			node operator=(const node &rhs)
+			{
+				this->value = rhs.value;
+				this->parent = rhs.parent;
+				this->left = rhs.left;
+				this->right = rhs.right;
+				this->color = rhs.color;
+				this->is_delete = rhs.is_delete;
+				return (*this);
+			};
 
 			~node() {};
 

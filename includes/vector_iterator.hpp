@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/29 13:25:50 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 15:19:14 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 18:15:29 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ namespace ft
 		public:
 			typedef V								value_type;
 			typedef std::ptrdiff_t					difference_type;
-			typedef std::bidirectional_iterator_tag	iterator_category;
 			typedef V* 								pointer;
 			typedef V& 								reference;
+			typedef std::bidirectional_iterator_tag	iterator_category;
 		private:
 			pointer		_ptr;
 			
