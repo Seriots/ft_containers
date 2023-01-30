@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 20:08:33 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 16:38:31 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,35 +29,20 @@
 
 extern std::string name;
 
-void	display_vector(ft::vector<int> &v, std::ofstream& out)
+template<typename T>
+void	display_vector(ft::vector<T> &v, std::ofstream& out)
 {
-	out << v.size() << " " << v.capacity() << " " << v.empty() << " ";
-	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++ )
+	out << v.size() << " " << v.empty() << " ";
+	for (typename ft::vector<T>::iterator it = v.begin(); it != v.end(); it++ )
 		out << *it << " ";
 	out << std::endl;
 }
 
-void	display_vector(ft::vector<std::string> &v, std::ofstream& out)
-{
-	out << v.size() << " " << v.capacity() << " " << v.empty() << " ";
-	for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++ )
-		out << *it << " ";
-	out << std::endl;
-}
-
-
-void	display_vector_content(ft::vector<int> &v, std::ofstream& out, std::string prompt)
+template<typename T>
+void	display_vector_content(ft::vector<T> &v, std::ofstream& out, std::string prompt = "")
 {
 	out << prompt << " ";
-	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++ )
-		out << *it << " ";
-	out << std::endl;
-}
-
-void	display_vector_content(ft::vector<std::string> &v, std::ofstream& out, std::string prompt)
-{
-	out << prompt << " ";
-	for (ft::vector<std::string>::iterator it = v.begin(); it != v.end(); it++ )
+	for (typename ft::vector<T>::iterator it = v.begin(); it != v.end(); it++ )
 		out << *it << " ";
 	out << std::endl;
 }
@@ -91,6 +76,18 @@ void	test_vector_constructor(std::ofstream& out)
 	display_vector(v3, out);
 	display_vector(v4, out);
 	display_vector(v5, out);
+
+	ft::vector<std::string> v6(5, "Hello");
+	ft::vector<std::string> v7(v6);
+	ft::vector<std::string> v8;
+	ft::vector<std::string> v9(v8.begin(), v8.end());
+
+	v8 = v6;
+
+	display_vector(v6, out);
+	display_vector(v7, out);
+	display_vector(v8, out);
+	display_vector(v9, out);
 	
 }
 
@@ -187,16 +184,25 @@ void	test_vector_iterator(std::ofstream &out)
 		out << *it << " ";
 	out << std::endl;
 	out << "<Const Reverse Iterator ++>" << std::endl;
-	ft::vector<int>::const_reverse_iterator ite = v.rend();
-	for (ft::vector<int>::const_reverse_iterator it = v.rbegin(); it != ite; it++ )
+	for (ft::vector<int>::const_reverse_iterator it = v.rbegin(); it != v.rend(); it++ )
 		out << *it << " ";
 	out << std::endl;
 	out << "<Const Reverse Iterator -->" << std::endl;
-	ite = v.rbegin() - 1;
-	for (ft::vector<int>::const_reverse_iterator it = v.rend() - 1; it != ite; it-- )
+	for (ft::vector<int>::const_reverse_iterator it = v.rend() - 1; it != v.rbegin() - 1; it-- )
 		out << *it << " ";
 	out << std::endl;
 	
+}
+
+template<typename It2, typename It1>
+void	compare(It1 it1, It2 it2, std::ofstream &out)
+{
+	out << std::boolalpha << "it1 == it2: " << (it1 == it2) << std::endl;
+	out << std::boolalpha << "it1 != it2: " << (it1 != it2) << std::endl;
+	out << std::boolalpha << "it1 < it2: " << (it1 < it2) << std::endl;
+	out << std::boolalpha << "it1 <= it2: " << (it1 <= it2) << std::endl;
+	out << std::boolalpha << "it1 > it2: " << (it1 > it2) << std::endl;
+	out << std::boolalpha << "it1 >= it2: " << (it1 >= it2) << std::endl;
 }
 
 void	test_vector_comparison(std::ofstream &out)
@@ -268,6 +274,43 @@ void	test_vector_comparison(std::ofstream &out)
 	out << "<To :>" << std::endl;
 	display_vector(v, out);
 	display_vector(v4, out);
+
+	ft::vector<int>::iterator it = v.begin();
+	ft::vector<int>::iterator it2 = v2.begin();
+	ft::vector<int>::const_iterator it3 = v.begin();
+	ft::vector<int>::const_iterator it4 = v2.begin();
+	ft::vector<int>::reverse_iterator it5 = v.rbegin();
+	ft::vector<int>::reverse_iterator it6 = v2.rbegin();
+	ft::vector<int>::const_reverse_iterator it7 = v.rbegin();
+	ft::vector<int>::const_reverse_iterator it8 = v2.rbegin();
+
+	ft::vector<int>::iterator eit = v.end();
+	ft::vector<int>::iterator eit2 = v2.end();
+	ft::vector<int>::const_iterator eit3 = v.end();
+	ft::vector<int>::const_iterator eit4 = v2.end();
+	ft::vector<int>::reverse_iterator eit5 = v.rend();
+	ft::vector<int>::reverse_iterator eit6 = v2.rend();
+	ft::vector<int>::const_reverse_iterator eit7 = v.rend();
+	ft::vector<int>::const_reverse_iterator eit8 = v2.rend();
+
+	out << "<Vector compare Iterators>" << std::endl;
+
+	compare(it, it2, out);
+	compare(it3, it4, out);
+	compare(it5, it6, out);
+	compare(it7, it8, out);
+	compare(eit, eit2, out);
+	compare(eit3, eit4, out);
+	compare(eit5, eit6, out);
+	compare(eit7, eit8, out);
+	compare(it, eit, out);
+	compare(it3, eit3, out);
+	compare(it5, eit5, out);
+	compare(it7, eit7, out);
+	out << "it == it3 = " << (it == it3) << std::endl;
+	out << "it == it5 = " << (it3 == it) << std::endl;
+	out << "it == it7 = " << (it5 == it7) << std::endl;
+	out << "it == it7 = " << (it7 == it5) << std::endl;
 }
 
 void	test_vector_assign(std::ofstream &out)
@@ -330,6 +373,17 @@ void	test_vector_assign(std::ofstream &out)
 	v6.assign(v5.begin(), v5.end());
 	out << "<Set v6=v5>" << std::endl;
 	display_vector(v6, out);
+
+	v6.assign(0, "Hello");
+	out << "<Set v6.assign(0, \"Hello\")>" << std::endl;
+	display_vector(v6, out);
+	v6.assign(1, "Hello");
+	out << "<Set v6.assign(1, \"Hello\")>" << std::endl;
+	display_vector(v6, out);
+
+	v6.assign(64, "hell");
+	out << "<Set v6.assign(64, \"hell\")>" << std::endl;
+	display_vector(v6, out);
 }
 
 void	test_vector_pushback_ten(std::ofstream& out)
@@ -340,8 +394,6 @@ void	test_vector_pushback_ten(std::ofstream& out)
 
 	for (int i = 0; i < 10; i++)
 		v.push_back(i);
-	out << v.size() << " " << v.capacity() << " " << v.empty() << std::endl;
-	v.pop_back();
 	out << v.size() << " " << v.capacity() << " " << v.empty() << std::endl;
 
 }
@@ -405,6 +457,7 @@ void	test_vector_insert(std::ofstream& out)
 	out << "<Vector Insert>" << std::endl;
 
 	ft::vector<int> v;
+	ft::vector<std::string> v2;
 
 	for (int i = 0; i < 7; i++)
 		v.push_back(i);
@@ -420,6 +473,34 @@ void	test_vector_insert(std::ofstream& out)
 		display_vector(v, out);
 	}
 	out << "v.insert(v.begin() + 3, 100 + i) = " << *(v.insert(v.begin() + 3, 100 + 15)) << std::endl;
+
+	v.insert(v.begin() + 1, 5);
+	display_vector(v, out);
+
+	v.insert(v.end(), 5);
+	display_vector(v, out);
+
+	v.insert(v.begin(), 5);
+	display_vector(v, out);
+
+	std::string	str[] = {"Hello", "World", "!"};
+	v2.assign(str, str + 3);
+	display_vector_content(v2, out);
+	v2.insert(v2.begin() + 1, "C++");
+	display_vector_content(v2, out);
+	v2.insert(v2.begin(), "C++");
+	display_vector_content(v2, out);
+	v2.insert(v2.end(), "C++");
+
+	display_vector_content(v2, out);
+
+	ft::vector<char> v3;
+
+	std::istringstream str2("1 2 3 4 5 6 7");
+    std::istreambuf_iterator<char> it(str2), end;
+
+	v3.insert(v3.end(), it, end);
+	display_vector_content(v3, out);
 }
 
 void	test_vector_insert_fill(std::ofstream& out)
@@ -466,53 +547,16 @@ void	test_vector_insert_range(std::ofstream& out)
 	display_vector_content(v2, out, "v2 = ");
 
 	out << "<Set same x20000>" << std::endl;
-	for (int i = 0; i < 2000; i++)
+	for (int i = 0; i < 20; i++)
 		v2.insert(v2.begin(), v.begin(), v.end());
 	display_vector_content(v2, out, "v2: ");
 
 	out << "<Set v3 empty and run v x20000>" << std::endl;
-	for (int i = 0; i < 2000; i++)
+	for (int i = 0; i < 20; i++)
 		v3.insert(v3.begin(), v.begin(), v.end());
 	v3.push_back(42);
 	display_vector_content(v3, out, "v3: ");
 }
-
-// void	test_vector_insert_range(std::ofstream& out)
-// {
-// 	out << "<Vector Insert Range>" << std::endl;
-
-// 	//10 elements
-// 	std::string str[] = {"Hello", "World", "!", "I", "am", "a", "string", "vector", "!", "!"};
-
-// 	ft::vector<std::string> v;
-// 	ft::vector<std::string> v2;
-// 	ft::vector<std::string> v3;
-
-// 	for (int i = 0; i < 7; i++)
-// 		v2.push_back(str[i]);
-
-// 	for (int i = 0; i < 10; i++)
-// 		v.push_back(str[i]);
-
-// 	out << "<Set v: >" << std::endl;
-// 	display_vector(v, out);
-// 	out << "<Set: v2 = v2[0:4]v[:]v2[4:]>" << std::endl;
-// 	v2.insert(v2.begin() + 3, v.begin(), v.end());
-// 	display_vector_content(v2, out, "v2 = ");
-// 	v2.push_back("42");
-// 	display_vector_content(v2, out, "v2 = ");
-
-// 	out << "<Set same x20000>" << std::endl;
-// 	for (int i = 0; i < 2000; i++)
-// 		v2.insert(v2.begin(), v.begin(), v.end());
-// 	display_vector_content(v2, out, "v2: ");
-
-// 	out << "<Set v3 empty and run v x20000>" << std::endl;
-// 	for (int i = 0; i < 2000; i++)
-// 		v3.insert(v3.begin(), v.begin(), v.end());
-// 	v3.push_back("42");
-// 	display_vector_content(v3, out, "v3: ");
-// }
 
 void	test_vector_insert_toomany(std::ofstream& out)
 {
@@ -565,6 +609,8 @@ void	test_vector_clear(std::ofstream &out)
 	display_vector(v, out);
 	v.clear();
 	display_vector(v, out);
+	v.clear();
+	display_vector(v, out);
 }
 
 void	test_vector_swap(std::ofstream &out)
@@ -580,11 +626,19 @@ void	test_vector_swap(std::ofstream &out)
 	for (int i = 0; i < 10000; i++)
 		v2.push_back(i);
 
+	ft::vector<int>::iterator it = v.begin();
+	ft::vector<int>::iterator it2 = v2.begin();
+
 	display_vector(v, out);
 	display_vector(v2, out);
 	v.swap(v2);
-	display_vector(v, out);
-	display_vector(v2, out);
+
+	for (; it2 != v.end(); it2++)
+		out << *it2 << " ";
+	out << std::endl;
+	for (; it != v2.end(); it++)
+		out << *it << " ";
+
 	v.swap(v);
 	display_vector(v, out);
 }

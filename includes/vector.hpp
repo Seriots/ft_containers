@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 16:09:35 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 13:40:05 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/30 17:12:11 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ namespace ft
 				clear();
 				if (n > _capacity)
 					reserve(__new_capacity(n));
-				//std::copy(first, last, _data);
 				for (size_type i = 0; i < n; i++)
 					_allocator.construct(_data + i, *first++);
 				_size = n;
@@ -108,10 +107,12 @@ namespace ft
 				{
 					if (_size + n > _capacity)
 						reserve(__new_capacity(_size + n));
-					for (int i = _size - 1; i >= (int)dist; i--)
+					for (size_type i = _size - 1; i >= dist; i--)
 					{
 						_allocator.construct(_data + i + n, _data[i]);
 						_allocator.destroy(_data + i);
+						if (i == dist)
+							break ;
 					}
 					for (size_type k = dist; k < dist + n; k++)
 						_allocator.construct(_data + k, *first++);
@@ -274,9 +275,7 @@ namespace ft
 			void push_back(const value_type& val)
 			{
 				if (_size == _capacity)
-				{
 					reserve(__new_capacity(_capacity + 1));
-				}
 				_allocator.construct(_data + _size, val);
 				_size++;
 			};
@@ -310,13 +309,17 @@ namespace ft
 				{
 					if (_size + n > _capacity)
 						reserve(__new_capacity(_size + n));
-					for (int i = _size - 1; i >= (int)dist; i--)
+					
+					for (size_type i = _size - 1; i >= dist; i--)
 					{						
 						_allocator.construct(_data + i + n, _data[i]);
 						_allocator.destroy(_data + i);
+						if (i == dist)
+							break ;
 					}
 					for (size_type k = dist; k < dist + n; k++)
 						_allocator.construct(_data + k, val);
+					
 					_size += n;
 				}
 			};
