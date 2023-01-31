@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 17:34:56 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/31 16:54:11 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 namespace ft
 {
-	template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::node<ft::pair<const Key, T> > > >
+	template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
 	class rbTree
 	{
 		public:
@@ -36,18 +36,19 @@ namespace ft
 			typedef T											mapped_type;
 			typedef ft::pair<const key_type, mapped_type>		value_type;
 			typedef Compare										key_compare;
-			typedef Allocator									allocator_type;
+			typedef node<value_type>							node_type;
+			typedef typename Allocator::template rebind<node_type>::other	allocator_type;
 			typedef typename allocator_type::reference			reference;
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef ft::rbTreeIterator<value_type>				iterator;
-			typedef ft::rbTreeIterator<const value_type>		const_iterator;		
+			typedef ft::rbTreeIterator<value_type, node_type>			iterator;
+			typedef ft::rbTreeIterator<const value_type, node_type>		const_iterator;		
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
 			typedef typename allocator_type::difference_type	difference_type;
 			typedef typename allocator_type::size_type			size_type;
-			typedef node<value_type>							node_type;
+			//typedef typename allocator_type::template rebind<node_type>::other node_allocator;
 
 		private:
 			node_type			*_root;

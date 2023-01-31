@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 10:59:34 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 15:13:39 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/01/31 13:46:02 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,13 @@ namespace ft
 			typedef typename allocator_type::const_reference								const_reference;
 			typedef typename allocator_type::pointer										pointer;
 			typedef typename allocator_type::const_pointer									const_pointer;
-			typedef ft::rbTreeIterator<value_type>											iterator;
-			typedef ft::rbTreeIterator<const value_type>									const_iterator;	
+			typedef ft::rbTreeIterator<value_type, ft::node<value_type> >					iterator;
+			typedef ft::rbTreeIterator<const value_type, ft::node<value_type> >				const_iterator;	
 			typedef ft::reverse_iterator<iterator>											reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>									const_reverse_iterator;
 			typedef typename allocator_type::difference_type								difference_type;
 			typedef typename allocator_type::size_type										size_type;
-			typedef typename ft::rbTree<key_type, mapped_type, key_compare, std::allocator<ft::node<value_type> > > rbTree;
+			typedef typename ft::rbTree<key_type, mapped_type, key_compare, allocator_type>	rbTree;
 
 			class value_compare
 			{

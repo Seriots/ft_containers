@@ -89,6 +89,7 @@
 #include <sstream>
 
 #include "map.hpp"
+#include <map>
 
 
 // template <class InputIterator>
@@ -111,16 +112,32 @@ int main()
 {
     ft::map<int, std::string> mymap;
 
-    mymap.insert(ft::make_pair(1, "one"));
-    mymap.insert(ft::make_pair(2, "two"));
+    mymap.insert(ft::make_pair(11, "eleven"));
+    mymap.insert(ft::make_pair(10, "ten"));
+    mymap.insert(ft::make_pair(9, "nine"));
+    mymap.insert(ft::make_pair(8, "eight"));
+    mymap.insert(ft::make_pair(7, "seven"));
+    mymap.insert(ft::make_pair(6, "six"));
+    mymap.insert(ft::make_pair(5, "five"));
+    mymap.insert(ft::make_pair(4, "four"));
     mymap.insert(ft::make_pair(3, "three"));
+    mymap.insert(ft::make_pair(2, "two"));
+    mymap.insert(ft::make_pair(1, "one"));
 
     ft::map<int, std::string>::iterator it = mymap.begin();
     ft::map<int, std::string>::const_iterator cit = mymap.begin();
+    ft::map<int, std::string>::reverse_iterator rit = mymap.rbegin();
+    ft::map<int, std::string>::const_reverse_iterator rcit = mymap.rbegin();
 
     for (; it != mymap.end(); it++)
         std::cout << it->first << " => " << it->second << std::endl;
 
     for (; cit != mymap.end(); cit++)
         std::cout << cit->first << " => " << cit->second << std::endl;
+    
+    for (; rit != mymap.rend(); rit++)
+        std::cout << rit->first << " => " << rit->second << std::endl;
+    
+    for (; rcit != mymap.rend(); rcit++)
+        std::cout << rcit->first << " => " << rcit->second << std::endl;
 }
