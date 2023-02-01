@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/31 16:54:11 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/01 21:08:30 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "rbtree_iterator.hpp"
 #include "rbtree_node.hpp"
 #include "pair.hpp"
+#include "equal.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -64,19 +65,24 @@ namespace ft
 				tmp.setParent(node->getParent());
 				tmp.setLeft(node->getLeft());
 				tmp.setRight(node->getRight());
+				tmp.setColor(node->getColor());
+				_allocator.destroy(node);
 				_allocator.construct(node, node_type(val));
 				node->setParent(tmp.getParent());
 				node->setLeft(tmp.getLeft());
 				node->setRight(tmp.getRight());
+				node->setColor(tmp.getColor());
 			};
 
 			void	__linkEnd(node_type *node)
 			{
 				if (node == NULL)
 				{
+					_allocator.destroy(_end);
 					_allocator.construct(_end, value_type());
 					return ;
 				}
+				_allocator.destroy(_end);
 				_allocator.construct(_end, node->getValue());
 				_end->setParent(NULL);
 				_end->setRight(node);
@@ -203,7 +209,7 @@ namespace ft
 				else if (__isBlack(uncle) && parent->getRight() == node && grand_parent->getLeft() == parent)
 				{
 					__leftRotation(parent);
-					__rightRotation(parent);
+					__rightRotation(node->getParent());
 					node->setColor(color_black);
 					node->getLeft()->setColor(color_red);
 					node->getRight()->setColor(color_red);
@@ -211,7 +217,8 @@ namespace ft
 				else if (__isBlack(uncle) && parent->getLeft() == node && grand_parent->getRight() == parent)
 				{
 					__rightRotation(parent);
-					__leftRotation(parent);
+					
+					__leftRotation(node->getParent());
 					node->setColor(color_black);
 					node->getLeft()->setColor(color_red);
 					node->getRight()->setColor(color_red);
@@ -235,7 +242,6 @@ namespace ft
 			void	__balanceTreeDelete(node_type *node)
 			{
 				node_type	*sibling;
-				node_type	*parent;
 				bool		nodeIsLeftChild;
 
 				/****************Case 1***********************/
@@ -244,29 +250,29 @@ namespace ft
 					node->setColor(color_black);
 					return;
 				}
-				parent = node->getParent();
+
 				sibling = __getSibling(node);
 
 				/****************Case 2***********************/
-				if (sibling->getColor() == color_red) {
+				if (sibling->getColor() == color_red)
+				{
 					__handleRedSibling(node, sibling);
 					sibling = __getSibling(node);
 				}
-
 				if (__isBlack(sibling->getLeft()) && __isBlack(sibling->getRight()))
 				{
 					sibling->setColor(color_red);
-
+					
 					/****************Case 3***********************/
-					if (parent->getColor() == color_red)
-						parent->setColor(color_black);
+					if (node->getParent()->getColor() == color_red)
+						node->getParent()->setColor(color_black);
 					/****************Case 4***********************/
 					else
-						__balanceTreeDelete(parent);
+						__balanceTreeDelete(node->getParent());
 				}
 				else
 				{
-					nodeIsLeftChild = (node == parent->getLeft());
+					nodeIsLeftChild = (node == node->getParent()->getLeft());
 
 					/****************Case 5***********************/
 					if (nodeIsLeftChild && __isBlack(sibling->getRight()))
@@ -274,33 +280,33 @@ namespace ft
 						sibling->getLeft()->setColor(color_black);
 						sibling->setColor(color_red);
 						__rightRotation(sibling);
-						sibling = parent->getRight();
+						sibling = node->getParent()->getRight();
 					}
 					else if (!nodeIsLeftChild && __isBlack(sibling->getLeft()))
 					{
 						sibling->getRight()->setColor(color_black);
 						sibling->setColor(color_red);
 						__leftRotation(sibling);
-						sibling = parent->getLeft();
+						sibling = node->getParent()->getLeft();
 					}
 
 					/****************Case 6***********************/
-					sibling->setColor(parent->getColor());
-					parent->setColor(color_black);
+					sibling->setColor(node->getParent()->getColor());
+					node->getParent()->setColor(color_black);
 					if (nodeIsLeftChild)
 					{
 						sibling->getRight()->setColor(color_black);
-						__leftRotation(parent);
+						__leftRotation(node->getParent());
 					}
 					else
 					{
 						sibling->getLeft()->setColor(color_black);
-						__rightRotation(parent);
+						__rightRotation(node->getParent());
 					}
 				}
 			};
 			
-			node_type	*__removeWithZeroOrOneChild(node_type *node, bool color)
+			node_type	*__removeZeroOrOneChild(node_type *node, bool color)
 			{
 				node_type	*ret;
 
@@ -412,7 +418,7 @@ namespace ft
 			
 			rbTree(rbTree const &other): _root(NULL), _end(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
 			{
-				if (*this != other)
+				if (this != &other)
 				{
 					_end = _allocator.allocate(1);
 					_allocator.construct(_end, node_type());
@@ -427,8 +433,9 @@ namespace ft
 
 			rbTree	&operator=(rbTree const &other)
 			{
-				if (*this != other)
+				if (this != &other)
 				{
+					_allocator.destroy(_end);
 					_allocator.construct(_end, node_type());
 					__clearTree(_root);
 					_root = NULL;
@@ -513,7 +520,6 @@ namespace ft
 					else
 						return (ft::pair<iterator, bool>(iterator(tmp), false)); // key already exists
 				}
-				
 				new_node = _allocator.allocate(1);
 				_allocator.construct(new_node, node_type(val));
 				new_node->setColor(color_red);
@@ -525,8 +531,8 @@ namespace ft
 				else
 					parent->setLeft(new_node);
 				new_node->setParent(parent);
-
 				__balanceTreeInsert(new_node);
+				
 				_size++;
 				__linkEnd(_root);
 				return (ft::pair<iterator, bool>(iterator(new_node), true));
@@ -581,14 +587,16 @@ namespace ft
 				
 				deletedColor = node->getColor();
 				if (node->getLeft() == NULL || node->getRight() == NULL)
-					movedUpNode = __removeWithZeroOrOneChild(node, deletedColor);
+				{
+					movedUpNode = __removeZeroOrOneChild(node, deletedColor);
+				}
 				else
 				{
 					//reverse in-order successor 
 					successor = __findMaximum(node->getLeft()); // find the in-order successor __findMinimum(node->getRight());
 					__setNodeValue(node, successor->getValue());
 					deletedColor = successor->getColor();
-					movedUpNode = __removeWithZeroOrOneChild(successor, successor->getColor());
+					movedUpNode = __removeZeroOrOneChild(successor, successor->getColor());
 				}
 
 				if (deletedColor == color_black)
@@ -606,26 +614,49 @@ namespace ft
 				return (1);
 			};
 
-			void	remove(iterator pos)
+			// void	display(node_type *node)
+			// {
+			// 	if (node == NULL)
+			// 		return ;
+			// 	std::cout << node->getValue().first << ", parent: " << node->getParent()->getValue().first << ", color: " << node->getColor() << ", left: ";
+			// 	if (node->getLeft() != NULL)
+			// 		std::cout << node->getLeft()->getValue().first;
+			// 	else
+			// 		std::cout << "NULL";
+			// 	std::cout << ", right: ";
+			// 	if (node->getRight() != NULL)
+			// 		std::cout << node->getRight()->getValue().first;
+			// 	else
+			// 		std::cout << "NULL";
+			// 	std::cout << std::endl;
+			// 	display(node->getLeft());
+			// 	display(node->getRight());
+			// }
+
+			iterator	remove(iterator pos)
 			{
 				node_type	*node = find(pos->first);
+				iterator	ret = pos++;
 				node_type	*movedUpNode;
 				node_type	*successor;
 				bool		deletedColor;
 
 				if (node == NULL || node == _end)
-					return ;
-				
+				{
+					return (iterator(_end));
+				}
 				deletedColor = node->getColor();
 				if (node->getLeft() == NULL || node->getRight() == NULL)
-					movedUpNode = __removeWithZeroOrOneChild(node, deletedColor);
+				{
+					movedUpNode = __removeZeroOrOneChild(node, deletedColor);
+				}
 				else
 				{
 					//reverse in-order successor 
 					successor = __findMaximum(node->getLeft()); // find the in-order successor __findMinimum(node->getRight());
 					__setNodeValue(node, successor->getValue());
 					deletedColor = successor->getColor();
-					movedUpNode = __removeWithZeroOrOneChild(successor, successor->getColor());
+					movedUpNode = __removeZeroOrOneChild(successor, successor->getColor());
 				}
 
 				if (deletedColor == color_black)
@@ -640,7 +671,7 @@ namespace ft
 				}
 				__linkEnd(_root);
 				_size--;
-				return ;
+				return (ret);
 			};
 
 			node_type	*find(const Key &key) const
@@ -669,19 +700,23 @@ namespace ft
 			void	swap(rbTree &other)
 			{
 				node_type	*tmp = _root;
+				node_type	*tmp_end = _end;
 				size_type	tmp_size = _size;
 				allocator_type	tmp_alloc = _allocator;
 				key_compare	tmp_comp = _comp;
+				
 
-				_root = other.getRoot();
+				_root = other._root;
+				_end = other._end;
 				_size = other.size();
 				_allocator = other.get_allocator();
-				_comp = other.getComp();
+				_comp = other._comp;
 
-				other.setRoot(tmp);
-				other.setSize(tmp_size);
-				other.setAllocator(tmp_alloc);
-				other.setComp(tmp_comp);
+				other._root = tmp;
+				other._end = tmp_end;
+				other._size = tmp_size;
+				other._allocator = tmp_alloc;
+				other._comp = tmp_comp;
 			};
 
 			bool	count(const key_type &key) const 
@@ -742,18 +777,20 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(key, tmp->getValue().first))
-						tmp = tmp->getLeft();
-					else if (_comp(tmp->getValue().first, key))
+					if (_comp(tmp->getValue().first, key))
+						tmp = tmp->getRight();
+					else if (_comp(key, tmp->getValue().first))
 					{
 						upper = tmp;
-						tmp = tmp->getRight();
+						tmp = tmp->getLeft();
 					}
 					else
 					{
 						if (tmp->getRight() != NULL)
 							return (iterator(__findMinimum(tmp->getRight())));
-						return (iterator(tmp));
+						else if (upper == NULL)
+							return (iterator(_end));
+						return (iterator(upper));
 					}
 				}
 				if (upper == NULL)
@@ -768,18 +805,20 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(key, tmp->getValue().first))
-						tmp = tmp->getLeft();
-					else if (_comp(tmp->getValue().first, key))
+					if (_comp(tmp->getValue().first, key))
+						tmp = tmp->getRight();
+					else if (_comp(key, tmp->getValue().first))
 					{
 						upper = tmp;
-						tmp = tmp->getRight();
+						tmp = tmp->getLeft();
 					}
 					else
 					{
 						if (tmp->getRight() != NULL)
 							return (const_iterator(__findMinimum(tmp->getRight())));
-						return (const_iterator(tmp));
+						else if (upper == NULL)
+							return (iterator(_end));
+						return (const_iterator(upper));
 					}
 				}
 				if (upper == NULL)
@@ -800,19 +839,5 @@ namespace ft
 				const_iterator	upper = upper_bound(key);
 				return (ft::pair<const_iterator, const_iterator>(lower, upper));
 			};
-
-			bool	operator==(rbTree const &other) const
-			{
-				if (_size == other.size() && __isEqual(_root, other.getRoot()))
-					return (true);
-				return (false);
-			};
-
-			bool	operator!=(rbTree const &other) const { return (!(*this == other)); };
 	};
-			// void	display() const
-			// {
-			// 	if (_root != NULL)
-			// 		_root->display();
-			// };
 }

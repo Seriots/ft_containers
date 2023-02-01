@@ -6,7 +6,7 @@
 #    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/16 11:07:35 by lgiband           #+#    #+#              #
-#    Updated: 2023/01/30 16:02:50 by lgiband          ###   ########.fr        #
+#    Updated: 2023/02/01 11:20:05 by lgiband          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRCS =		main.cpp \
 			test_reverse_iterator.cpp \
 			test_equal.cpp \
 			test_lexicographical_compare.cpp \
-			test_vector.cpp \
+			test_map.cpp \
 #			test_pair.cpp \
 #			test_map.cpp \
 

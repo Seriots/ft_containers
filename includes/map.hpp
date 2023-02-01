@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 10:59:34 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/31 13:46:02 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/01 17:27:21 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ namespace ft
 				friend class map;
 				protected:
 					Compare comp;
-					value_compare (Compare c) : comp(c) {}
+					value_compare (Compare c = Compare()) : comp(c) {}
 				public:
 					typedef bool result_type;
 					typedef value_type first_argument_type;
@@ -78,10 +78,7 @@ namespace ft
 			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() ): _allocator(alloc), _comp(comp), _tree(rbTree())
 			{
 				while (first != last)
-				{
-					_tree.insert(*first);
-					first++;
-				}
+					_tree.insert(*first++);
 			};
 
 	 		map( const map& other ) : _allocator(other._allocator), _comp(other._comp), _tree(other._tree) {};	
@@ -127,20 +124,20 @@ namespace ft
 			void 						insert( InputIt first, InputIt last ) { while (first != last) { _tree.insert(*first); first++; } }
 			size_type					erase( const key_type& key ) { return (_tree.remove(key)); };
 			void						erase( iterator pos ) { _tree.remove(pos); };
-			void						erase( iterator first, iterator last ) { while (first != last) { _tree.remove(first); first++; } };
+			void						erase( iterator first, iterator last ) { iterator tmp; while (first != last) { tmp = first; first++; _tree.remove(tmp); } };
 			void						swap( map& other ) { _tree.swap(other._tree); _allocator = other.get_allocator(); _comp = other._comp; };
 			
 			/**************************Lookup**********************************/
 			size_type		count( const key_type& key ) const {return (_tree.count(key));};
-			iterator		find( const key_type& key ) {if (_tree.find(key) == NULL) return (end()); return (iterator(_tree.find(key)));};
-			const_iterator	find( const key_type& key ) const { if (_tree.find(key) == NULL) return (end()); return (const_iterator(_tree.find(key)));};
+			iterator		find( const key_type& key ) { node<value_type> *node = _tree.find(key);  if (node == NULL) return (end()); return (iterator(node));};
+			const_iterator	find( const key_type& key ) const { node<value_type> *node = _tree.find(key); if (node == NULL) return (end()); return (const_iterator(node));};
 
 			ft::pair<iterator,iterator>				equal_range( const key_type& key ) {return (_tree.equal_range(key));};
 			ft::pair<const_iterator,const_iterator> equal_range( const key_type& key ) const {return (_tree.equal_range(key));}
 			iterator								lower_bound( const key_type& key ) {return (_tree.lower_bound(key));};
 			const_iterator							lower_bound( const key_type& key ) const {return (_tree.lower_bound(key));};
 			iterator								upper_bound( const key_type& key ) {return (_tree.upper_bound(key));};
-			const_iterator							upper_bound( const key_type& key ) const {return (_tree.upper_bound(key));};
+			const_iterator							upper_bound( const key_type& key ) const { return (_tree.upper_bound(key));};
 			
 			/*************************Observers********************************/			
 			value_compare	value_comp() const {return value_compare(_comp);};

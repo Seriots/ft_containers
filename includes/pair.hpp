@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 11:01:37 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 18:14:16 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/01 15:59:14 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ namespace ft
 		template< class U1, class U2 >
 		pair(const ft::pair<U1, U2>& p): first(p.first), second(p.second) {};
 		
-		pair& operator= (const pair& pr) {first = pr.first; second = pr.second; return(*this);};
+		pair& operator=(const pair& pr) {first = pr.first; second = pr.second; return(*this);};
 	};
 
 	template< class T1, class T2 >
@@ -48,14 +48,6 @@ namespace ft
 
 	template< class T1, class T2 >
 	bool operator<( const ft::pair<T1, T2>& lhs, const ft::pair<T1, T2>& rhs ) {return ((lhs.first < rhs.first) || (!(rhs.first < lhs.first) && lhs.second < rhs.second));};
-	//{
-	//	if (lhs.first < rhs.first)
-	//		return (true);
-	//	else if (lhs.first == rhs.first)
-	//		return (lhs.second < rhs.second);
-	//	else
-	//		return (false);
-	//};
 
 	template< class T1, class T2 >
 	bool operator<=( const ft::pair<T1, T2>& lhs, const ft::pair<T1, T2>& rhs ) {return (!(rhs < lhs));};

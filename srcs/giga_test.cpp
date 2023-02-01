@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:15:13 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/28 16:58:16 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/01 17:27:27 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -976,7 +976,6 @@ namespace stack
 void	vector_tests(void)
 {
 	container_header("VECTOR");
-	std::cout << "here" << std::endl;
 	test_it(vector::ft_constructor, "constructor");
 	test_it(vector::ft_operator_equal, "operator=");
 	test_it(vector::ft_begin_end, "begin_end");

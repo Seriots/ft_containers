@@ -87,6 +87,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 #include "map.hpp"
 #include <map>
@@ -107,37 +108,36 @@
 //         _allocator.construct(_data + i, *it++);
 //     _size = n;
 // };
+#include <vector>
 
 int main()
 {
-    ft::map<int, std::string> mymap;
+    ft::map<int, int> mymap;
+    ft::map<int, int> mymap2;
+    std::vector<int> myvector;
+    srand(64);
 
-    mymap.insert(ft::make_pair(11, "eleven"));
-    mymap.insert(ft::make_pair(10, "ten"));
-    mymap.insert(ft::make_pair(9, "nine"));
-    mymap.insert(ft::make_pair(8, "eight"));
-    mymap.insert(ft::make_pair(7, "seven"));
-    mymap.insert(ft::make_pair(6, "six"));
-    mymap.insert(ft::make_pair(5, "five"));
-    mymap.insert(ft::make_pair(4, "four"));
-    mymap.insert(ft::make_pair(3, "three"));
-    mymap.insert(ft::make_pair(2, "two"));
-    mymap.insert(ft::make_pair(1, "one"));
+    // for (int i = 0; i < 62; i++)
+    // {
+    //     n = rand();
+    //     std::cout << n << std::endl;
+    //     mymap.insert(ft::make_pair(n, i));
+    // }
+    mymap.insert(ft::make_pair(7, 7));
+    mymap.insert(ft::make_pair(5, 5));
+    mymap.insert(ft::make_pair(8, 8));
+    mymap.insert(ft::make_pair(2, 2));
+    mymap.insert(ft::make_pair(3, 3));
+    mymap.insert(ft::make_pair(1, 1));
+    mymap.insert(ft::make_pair(6, 6));
+    mymap.insert(ft::make_pair(4, 4));
+    ft::map<int, int>::iterator lit = mymap.begin();
+    ft::map<int, int>::iterator lite = mymap.end();
 
-    ft::map<int, std::string>::iterator it = mymap.begin();
-    ft::map<int, std::string>::const_iterator cit = mymap.begin();
-    ft::map<int, std::string>::reverse_iterator rit = mymap.rbegin();
-    ft::map<int, std::string>::const_reverse_iterator rcit = mymap.rbegin();
+    std::advance(lit, 2);
 
-    for (; it != mymap.end(); it++)
-        std::cout << it->first << " => " << it->second << std::endl;
+    mymap.erase(lit, lite);
 
-    for (; cit != mymap.end(); cit++)
-        std::cout << cit->first << " => " << cit->second << std::endl;
-    
-    for (; rit != mymap.rend(); rit++)
-        std::cout << rit->first << " => " << rit->second << std::endl;
-    
-    for (; rcit != mymap.rend(); rcit++)
-        std::cout << rcit->first << " => " << rcit->second << std::endl;
+    for (ft::map<int, int>::iterator lit = mymap.begin(); lit != mymap.end(); lit++)
+        std::cout << lit->first << std::endl;
 }
