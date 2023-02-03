@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rbtree.hpp                                         :+:      :+:    :+:   */
+/*   rbTreeSet.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/24 13:36:40 by lgiband           #+#    #+#             */
-/*   Updated: 2023/02/03 11:00:04 by lgiband          ###   ########.fr       */
+/*   Created: 2023/02/03 11:01:16 by lgiband           #+#    #+#             */
+/*   Updated: 2023/02/03 11:12:24 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,12 @@
 
 namespace ft
 {
-	template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
-	class rbTree
+	template< class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key> >
+	class rbTreeSet
 	{
 		public:
-			typedef Key				 							key_type;
-			typedef T											mapped_type;
-			typedef ft::pair<const key_type, mapped_type>		value_type;
+			typedef Key											key_type;
+			typedef Key											value_type;
 			typedef Compare										key_compare;
 			typedef node<value_type>							node_type;
 			typedef typename Allocator::template rebind<node_type>::other	allocator_type;
@@ -43,7 +42,7 @@ namespace ft
 			typedef typename allocator_type::const_reference	const_reference;
 			typedef typename allocator_type::pointer			pointer;
 			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef ft::rbTreeIterator<value_type, node_type>			iterator;
+			typedef ft::rbTreeIterator<const value_type, node_type>		iterator;
 			typedef ft::rbTreeIterator<const value_type, node_type>		const_iterator;		
 			typedef ft::reverse_iterator<iterator>				reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
@@ -413,9 +412,9 @@ namespace ft
 			};
 
 		public:
-			rbTree(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
+			rbTreeSet(): _root(NULL), _end(0), _allocator(allocator_type()), _size(0), _comp(Compare()) {_end = _allocator.allocate(1); _allocator.construct(_end, node_type());};
 			
-			rbTree(rbTree const &other): _root(NULL), _end(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
+			rbTreeSet(rbTreeSet const &other): _root(NULL), _end(0), _allocator(other.get_allocator()), _size(other.size()), _comp(Compare())
 			{
 				if (this != &other)
 				{
@@ -430,7 +429,7 @@ namespace ft
 				}
 			};
 
-			rbTree	&operator=(rbTree const &other)
+			rbTreeSet	&operator=(rbTreeSet const &other)
 			{
 				if (this != &other)
 				{
@@ -449,7 +448,7 @@ namespace ft
 			};
 			
 			
-			~rbTree() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); __clearTree(_root); };
+			~rbTreeSet() { _allocator.destroy(_end); _allocator.deallocate(_end, 1); __clearTree(_root); };
 
 			iterator			begin() {return ((_size == 0 || _root == NULL) ? iterator(_end) : iterator(__findMinimum(_root)));};
 			const_iterator		begin() const {return ((_size == 0 || _root == NULL) ? const_iterator(_end) : const_iterator(__findMinimum(_root)));};
@@ -474,35 +473,6 @@ namespace ft
 			void				setComp(Compare comp) { _comp = comp; };
 			void				setAllocator(allocator_type allocator) { _allocator = allocator; };
 			
-			mapped_type&	at( const key_type& key)
-			{
-				node_type *tmp = find(key);
-				
-				if (tmp == NULL)
-					throw std::out_of_range("Key not found");
-				return (tmp->getValue().second);
-			};
-			
-			const mapped_type&	at( const key_type& key) const
-			{
-				node_type *tmp = find(key);
-				
-				if (tmp == NULL)
-					throw std::out_of_range("Key not found");
-				return (tmp->getValue().second);
-			};
-			
-			mapped_type&	operator[](const key_type& key)
-			{
-				node_type *tmp = find(key);
-				
-				if (tmp != NULL)
-					return (tmp->getValue().second);
-				
-				insert(ft::pair<key_type, mapped_type>(key, mapped_type()));
-				return (find(key)->getValue().second);
-			};
-			
 			ft::pair<iterator, bool>	insert(const value_type& val)
 			{
 				node<value_type>	*new_node;
@@ -512,9 +482,9 @@ namespace ft
 				while (tmp != NULL)
 				{
 					parent = tmp;
-					if (_comp(val.first, tmp->getValue().first))
+					if (_comp(val, tmp->getValue()))
 						tmp = tmp->getLeft();
-					else if (_comp(tmp->getValue().first, val.first))
+					else if (_comp(tmp->getValue(), val))
 						tmp = tmp->getRight();
 					else
 						return (ft::pair<iterator, bool>(iterator(tmp), false)); // key already exists
@@ -525,7 +495,7 @@ namespace ft
 				
 				if (_root == NULL)
 					_root = new_node;
-				else if (_comp(parent->getValue().first, val.first))
+				else if (_comp(parent->getValue(), val))
 					parent->setRight(new_node);
 				else
 					parent->setLeft(new_node);
@@ -547,9 +517,9 @@ namespace ft
 				while (tmp != NULL)
 				{
 					parent = tmp;
-					if (_comp(val.first, tmp->getValue().first))
+					if (_comp(val, tmp->getValue()))
 						tmp = tmp->getLeft();
-					else if (_comp(tmp->getValue().first, val.first))
+					else if (_comp(tmp->getValue(), val))
 						tmp = tmp->getRight();
 					else
 						return (iterator(tmp)); // key already exists
@@ -561,7 +531,7 @@ namespace ft
 				
 				if (_root == NULL)
 					_root = new_node;
-				else if (_comp(parent->getValue().first, val.first))
+				else if (_comp(parent->getValue(), val))
 					parent->setRight(new_node);
 				else
 					parent->setLeft(new_node);
@@ -613,28 +583,9 @@ namespace ft
 				return (1);
 			};
 
-			// void	display(node_type *node)
-			// {
-			// 	if (node == NULL)
-			// 		return ;
-			// 	std::cout << node->getValue().first << ", parent: " << node->getParent()->getValue().first << ", color: " << node->getColor() << ", left: ";
-			// 	if (node->getLeft() != NULL)
-			// 		std::cout << node->getLeft()->getValue().first;
-			// 	else
-			// 		std::cout << "NULL";
-			// 	std::cout << ", right: ";
-			// 	if (node->getRight() != NULL)
-			// 		std::cout << node->getRight()->getValue().first;
-			// 	else
-			// 		std::cout << "NULL";
-			// 	std::cout << std::endl;
-			// 	display(node->getLeft());
-			// 	display(node->getRight());
-			// }
-
 			iterator	remove(iterator pos)
 			{
-				node_type	*node = find(pos->first);
+				node_type	*node = find(*pos);
 				iterator	ret = pos++;
 				node_type	*movedUpNode;
 				node_type	*successor;
@@ -679,9 +630,9 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(key, tmp->getValue().first))
+					if (_comp(key, tmp->getValue()))
 						tmp = tmp->getLeft();
-					else if (_comp(tmp->getValue().first, key))
+					else if (_comp(tmp->getValue(), key))
 						tmp = tmp->getRight();
 					else
 						return (tmp); // key already exists
@@ -696,7 +647,7 @@ namespace ft
 				_size = 0;
 			};
 
-			void	swap(rbTree &other)
+			void	swap(rbTreeSet &other)
 			{
 				node_type	*tmp = _root;
 				node_type	*tmp_end = _end;
@@ -732,12 +683,12 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(key, tmp->getValue().first))
+					if (_comp(key, tmp->getValue()))
 					{
 						lower = tmp;
 						tmp = tmp->getLeft();
 					}
-					else if (_comp(tmp->getValue().first, key))
+					else if (_comp(tmp->getValue(), key))
 						tmp = tmp->getRight();
 					else
 						return (iterator(tmp));
@@ -754,12 +705,12 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(key, tmp->getValue().first))
+					if (_comp(key, tmp->getValue()))
 					{
 						lower = tmp;
 						tmp = tmp->getLeft();
 					}
-					else if (_comp(tmp->getValue().first, key))
+					else if (_comp(tmp->getValue(), key))
 						tmp = tmp->getRight();
 					else
 						return (const_iterator(tmp));
@@ -776,9 +727,9 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(tmp->getValue().first, key))
+					if (_comp(tmp->getValue(), key))
 						tmp = tmp->getRight();
-					else if (_comp(key, tmp->getValue().first))
+					else if (_comp(key, tmp->getValue()))
 					{
 						upper = tmp;
 						tmp = tmp->getLeft();
@@ -804,9 +755,9 @@ namespace ft
 
 				while (tmp != NULL)
 				{
-					if (_comp(tmp->getValue().first, key))
+					if (_comp(tmp->getValue(), key))
 						tmp = tmp->getRight();
-					else if (_comp(key, tmp->getValue().first))
+					else if (_comp(key, tmp->getValue()))
 					{
 						upper = tmp;
 						tmp = tmp->getLeft();
