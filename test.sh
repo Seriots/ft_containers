@@ -1,11 +1,5 @@
 #!/bin/bash
-if [ ! -f "ft_containers" ] || [ ! -f "std_containers" ]; then
-	sh load.sh
-fi
-
-if [ ! -d "test" ]; then
-	mkdir test
-fi
+make
 valgrind ./ft_containers 2> test/log_ft
 valgrind ./std_containers 2> test/log_std
 #./ft_containers > /dev/pts/6 && ./std_containers > /dev/pts/4

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 10:51:17 by lgiband           #+#    #+#             */
-/*   Updated: 2023/01/30 16:38:31 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/06 11:18:22 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -428,7 +428,7 @@ void	test_vector_pushback_too_many(std::ofstream& out)
 
 	ft::vector<int>	v;
 	
-	for (int i = 0; i < 1000000; i++)
+	for (int i = 0; i < 10000; i++)
 		v.push_back(i);
 	out << v.size() << " " << v.capacity() << " " << v.empty() << std::endl;
 }
@@ -546,12 +546,12 @@ void	test_vector_insert_range(std::ofstream& out)
 	v2.push_back(42);
 	display_vector_content(v2, out, "v2 = ");
 
-	out << "<Set same x20000>" << std::endl;
+	out << "<Set same x20>" << std::endl;
 	for (int i = 0; i < 20; i++)
 		v2.insert(v2.begin(), v.begin(), v.end());
 	display_vector_content(v2, out, "v2: ");
 
-	out << "<Set v3 empty and run v x20000>" << std::endl;
+	out << "<Set v3 empty and run v x20>" << std::endl;
 	for (int i = 0; i < 20; i++)
 		v3.insert(v3.begin(), v.begin(), v.end());
 	v3.push_back(42);

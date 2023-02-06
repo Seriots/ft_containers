@@ -6,7 +6,7 @@
 #    By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/16 11:07:35 by lgiband           #+#    #+#              #
-#    Updated: 2023/02/01 11:20:05 by lgiband          ###   ########.fr        #
+#    Updated: 2023/02/06 11:44:06 by lgiband          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,9 @@ SRCS =		main.cpp \
 			test_equal.cpp \
 			test_lexicographical_compare.cpp \
 			test_map.cpp \
-#			test_pair.cpp \
+			test_set.cpp \
+			test_pair.cpp \
+			test_vector.cpp \
 #			test_map.cpp \
 
 # test_is_integral.cpp test_enable_if.cpp
@@ -31,10 +33,11 @@ OBJS_DIR =	objs
 SRCS_DIR =	srcs
 HEAD_DIR =	includes
 
+TAG	 =			std
 # List of all compilation options
 # -------------------------------------------------------------------------
 CXX = 		c++
-CXXFLAGS =	-Wall -Wextra -Werror --std=c++98 -g
+CXXFLAGS =	-Wall -Wextra -Werror --std=c++98
 ifeq ($(n), std)
 	CPPFLAGS	+= -D NAMESPACE=0
 	TAG			=		std
@@ -45,8 +48,8 @@ endif
 
 # Description of the final target
 # -------------------------------------------------------------------------
-TAG	 =			std
-NAME =			ft_containers
+NAME_FT =			ft_containers
+NAME_STD =			std_containers
 
 # Libraries
 # -------------------------------------------------------------------------
@@ -78,9 +81,14 @@ _NO_COLOR	= \033[0m
 # create a compilation method to do two executables one with std and one without
 # -------------------------------------------------------------------------
 	
-all:			$(NAME)
+all:
+	@make --no-print-directory n=ft $(NAME_FT)
+	@make --no-print-directory n=std $(NAME_STD)
 
-$(NAME):		$(OBJS)
+$(NAME_FT):		$(OBJS)
+				$(CXX) $(LDFLAGS) -o $@ $(OBJS)
+
+$(NAME_STD):	$(OBJS)
 				$(CXX) $(LDFLAGS) -o $@ $(OBJS)
 
 $(OBJS_DIR)/$(TAG)/%.o: $(SRCS_DIR)/%.cpp $(OBJS_DIR)/$(TAG)/%.d
@@ -89,8 +97,6 @@ $(OBJS_DIR)/$(TAG)/%.o: $(SRCS_DIR)/%.cpp $(OBJS_DIR)/$(TAG)/%.d
 		echo -e "\n$(_BLUE)$(dir $@): Create$(_NO_COLOR)"; \
 	fi
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ -c $<
-
-all:		$(NAME)
 
 clean:		dclean
 			rm -Rf $(OBJS_DIR)
@@ -121,8 +127,8 @@ $(OBJS_DIR)/$(TAG)/%.d: $(SRCS_DIR)/%.cpp Makefile
 	$(CXX) -MM -MT $(@:.d=.o) $(CXXFLAGS) $(INCLUDES) $< >> $@
 
 dclean:
-			$(RM) std/$(DEPS)
-			$(RM) ft/$(DEPS)
+			rm -Rf $(OBJS_DIR)/std/$(DEPS)
+			rm -Rf $(OBJS_DIR)/ft/$(DEPS)
 
 .PHONY:		dclean
 .SILENT:    $(DEPS) dclean

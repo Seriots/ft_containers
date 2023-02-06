@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/16 10:18:05 by lgiband           #+#    #+#             */
-/*   Updated: 2023/02/01 11:19:37 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/06 11:13:15 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,10 @@ int	main(void)
 	std::ofstream	out;
 	std::string		path = "test/" + name + "test"; 
 	
-	// void	(*fonc[])(std::ofstream&) = {&stack_test_with_vector, &stack_test_with_deque,
-	// 									&reverse_iterator_test,
-	// 									&test_equal, &test_lexicographical_compare, &test_pair, &test_vector};
+	 void	(*fonc[])(std::ofstream&) = {&stack_test_with_vector, &stack_test_with_deque,
+	 									&reverse_iterator_test,
+	 									&test_equal, &test_lexicographical_compare, &test_pair, &test_vector, &test_map, &test_set};
 
-	void	(*fonc[])(std::ofstream&) = {&test_map};
 
 	// &test_is_integral &test_enable_if need to use c++11
 

@@ -6,7 +6,7 @@
 /*   By: lgiband <lgiband@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 16:57:24 by lgiband           #+#    #+#             */
-/*   Updated: 2023/02/01 17:37:42 by lgiband          ###   ########.fr       */
+/*   Updated: 2023/02/06 11:21:32 by lgiband          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -391,7 +391,7 @@ void	test_map_insert_too_many(std::ofstream &out)
 	
 	ft::map<int, std::string> mymap;
 
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 100000; i++)
 		mymap.insert(ft::make_pair(i, "test"));
 	display_map(out, mymap, "mymap contains");
 }
@@ -591,11 +591,9 @@ void	test_map_bound(std::ofstream &out)
 	out << std::endl;
 
 	it2 = mymap2.lower_bound(27);
-	dit2 = mymap2.upper_bound(27);
 	ret2 = mymap2.equal_range(27);
 
 	out << "mymap2.lower_bound(13) : " << it2->first << " " << it2->second << std::endl;
-	out << "mymap2.upper_bound(13) : " << dit2->first << " " << dit2->second << std::endl;
 	for (ft::map<int, std::string>::const_iterator it = ret2.first; it != ret2.second; ++it)
 		out << it->first << " " << it->second << std::endl;
 	out << std::endl;
